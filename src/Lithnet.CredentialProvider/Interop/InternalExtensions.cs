@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Security;
-using Lithnet.CredentialProvider.Interop;
 
 namespace Lithnet.CredentialProvider.Interop
 {
