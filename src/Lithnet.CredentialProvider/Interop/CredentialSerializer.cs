@@ -3,20 +3,24 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Lithnet.CredentialProvider.Interop
 {
-    internal static class CredentialSerializer
+    internal class CredentialSerializer
     {
-        internal static ILogger Logger { get; set; } = NullLogger.Instance;
+        private readonly ILogger logger;
 
-        public static CredentialSerialization GenerateCredentialSerialization(string domain, string username, SecureString password, bool isWorkstationUnlock, Guid providerId)
+        public CredentialSerializer(ILoggerFactory loggerFactory)
+        {
+            this.logger = loggerFactory.CreateLogger<CredentialSerializer>();
+        }
+
+        public CredentialSerialization GenerateCredentialSerialization(string domain, string username, SecureString password, bool isWorkstationUnlock, Guid providerId)
         {
             var authPackage = PInvoke.LookupAuthenticationPackage(CredProviderConstants.NEGOSSP_NAME_A);
-            var pData = SerializeKerbLogon(domain, username, password, isWorkstationUnlock ? KerbLogonSubmitType.WorkstationUnlockLogon : KerbLogonSubmitType.InteractiveLogon, out int size);
+            var pData = this.SerializeKerbLogon(domain, username, password, isWorkstationUnlock ? KerbLogonSubmitType.WorkstationUnlockLogon : KerbLogonSubmitType.InteractiveLogon, out int size);
 
-            Logger.LogTrace($"0x{pData.ToString("X16")} - Serializer: Password got packed into ");
+            this.logger.LogTrace($"0x{pData.ToString("X16")} - Serializer: Password got packed into ");
 
             return new CredentialSerialization()
             {
@@ -27,12 +31,12 @@ namespace Lithnet.CredentialProvider.Interop
             };
         }
 
-        public static CredentialSerialization GenerateCredentialSerialization(string domain, string username, string password, bool isWorkstationUnlock, Guid providerId)
+        public CredentialSerialization GenerateCredentialSerialization(string domain, string username, string password, bool isWorkstationUnlock, Guid providerId)
         {
             var authPackage = PInvoke.LookupAuthenticationPackage(CredProviderConstants.NEGOSSP_NAME_A);
-            var pData = SerializeKerbLogon(domain, username, password, isWorkstationUnlock ? KerbLogonSubmitType.WorkstationUnlockLogon : KerbLogonSubmitType.InteractiveLogon, out int size);
+            var pData = this.SerializeKerbLogon(domain, username, password, isWorkstationUnlock ? KerbLogonSubmitType.WorkstationUnlockLogon : KerbLogonSubmitType.InteractiveLogon, out int size);
 
-            Logger.LogTrace($"0x{pData.ToString("X16")}: Password got packed");
+            this.logger.LogTrace($"0x{pData.ToString("X16")}: Password got packed");
 
             return new CredentialSerialization()
             {
@@ -43,7 +47,7 @@ namespace Lithnet.CredentialProvider.Interop
             };
         }
 
-        private static unsafe IntPtr SerializeKerbLogon(string domain, string username, string password, KerbLogonSubmitType type, out int size)
+        private unsafe IntPtr SerializeKerbLogon(string domain, string username, string password, KerbLogonSubmitType type, out int size)
         {
             size = sizeof(KerberosInteractiveUnlockLogon) +
                         Encoding.Unicode.GetMaxByteCount(domain.Length) +
@@ -86,7 +90,7 @@ namespace Lithnet.CredentialProvider.Interop
             return pBuffer;
         }
 
-        private static unsafe IntPtr SerializeKerbLogon(string domain, string username, SecureString password, KerbLogonSubmitType type, out int size)
+        private unsafe IntPtr SerializeKerbLogon(string domain, string username, SecureString password, KerbLogonSubmitType type, out int size)
         {
             size = sizeof(KerberosInteractiveUnlockLogon) +
                         Encoding.Unicode.GetMaxByteCount(domain.Length) +
@@ -127,24 +131,24 @@ namespace Lithnet.CredentialProvider.Interop
             try
             {
                 buff = Marshal.SecureStringToCoTaskMemUnicode(password);
-                Logger.LogTrace($"0x{buff.ToString("X16")} - Serializer: Unprotected password");
+                this.logger.LogTrace($"0x{buff.ToString("X16")} - Serializer: Unprotected password");
 
                 IntPtr targetPositionToCopyTo = (IntPtr)(buffer + logon->Password.Buffer.ToInt64());
 
                 Buffer.MemoryCopy(buff.ToPointer(), targetPositionToCopyTo.ToPointer(), logon->Password.Length, password.Length * sizeof(char));
 
-                Logger.LogTrace($"0x{targetPositionToCopyTo.ToString("X16")} - Serializer: Copied unprotected password into LSA string buffer");
+                this.logger.LogTrace($"0x{targetPositionToCopyTo.ToString("X16")} - Serializer: Copied unprotected password into LSA string buffer");
             }
             finally
             {
                 if (buff != IntPtr.Zero)
                 {
                     Marshal.ZeroFreeCoTaskMemUnicode(buff);
-                    Logger.LogTrace($"0x{buff.ToString("X16")} - Serializer: Freed Unprotected password");
+                    this.logger.LogTrace($"0x{buff.ToString("X16")} - Serializer: Freed Unprotected password");
                 }
             }
 
-            Logger.LogTrace($"0x{((IntPtr)buffer).ToString("X16")} - Serializer: Put password");
+            this.logger.LogTrace($"0x{((IntPtr)buffer).ToString("X16")} - Serializer: Put password");
 
             return pBuffer;
         }

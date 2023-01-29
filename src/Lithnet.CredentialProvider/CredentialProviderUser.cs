@@ -19,10 +19,10 @@ namespace Lithnet.CredentialProvider
         private string logonStatus;
         private string providerId;
 
-        internal CredentialProviderUser(ICredentialProviderUser user)
+        internal CredentialProviderUser(ILoggerFactory loggerFactory, ICredentialProviderUser user)
         {
             this.User = user;
-            this.logger = CredentialProviderBase.LoggerFactory.CreateLogger<CredentialProviderUser>();
+            this.logger = loggerFactory.CreateLogger<CredentialProviderUser>();
         }
 
         /// <summary>

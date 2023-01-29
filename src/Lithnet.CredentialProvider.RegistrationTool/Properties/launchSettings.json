@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Lithnet.CredentialProvider.RegistrationTool": {
+      "commandName": "Project",
+      "commandLineArgs": "--unregister \"D:\\dev\\git\\ryannewington\\CredProvider.NET\\CredProvider.NET\\bin\\Debug\\CredProvider.NET.dll\""
+      //"commandLineArgs": "--register \"D:\\dev\\git\\lithnet\\windows-credential-provider\\src\\samples\\Lithnet.CredentialProvider.Sample.net6.0.x64\\bin\\Debug\\net6.0-windows\\Lithnet.CredentialProvider.Sample.net6.0.x64.dll\""
+    }
+  }
+}

@@ -12,7 +12,6 @@ namespace Lithnet.CredentialProvider
     public abstract partial class CredentialProviderCredential1Tile
     {
         private protected readonly ILogger logger;
-
         private protected ICredentialProviderCredentialEvents events;
         private protected ICredentialProviderCredentialEvents2 events2;
 
@@ -21,7 +20,7 @@ namespace Lithnet.CredentialProvider
         protected CredentialProviderCredential1Tile(CredentialProviderBase credentialProvider)
         {
             this.CredentialProvider = credentialProvider;
-            this.logger = CredentialProviderBase.LoggerFactory.CreateLogger(this.GetType());
+            this.logger = credentialProvider.LoggerFactory.CreateLogger(this.GetType());
         }
 
         internal CredentialProviderBase CredentialProvider { get; }
@@ -206,15 +205,15 @@ namespace Lithnet.CredentialProvider
                     return response;
                 }
 
-                CredentialSerializer.Logger = this.logger;
+                var serializer = new CredentialSerializer(this.CredentialProvider.LoggerFactory);
 
                 if (credentials is CredentialResponseSecure s)
                 {
-                    response.SerializedCredentials = CredentialSerializer.GenerateCredentialSerialization(credentials.Domain, credentials.Username, s.Password, this.UsageScenario == UsageScenario.UnlockWorkstation, this.CredentialProvider.CredentialProviderId);
+                    response.SerializedCredentials = serializer.GenerateCredentialSerialization(credentials.Domain, credentials.Username, s.Password, this.UsageScenario == UsageScenario.UnlockWorkstation, this.CredentialProvider.CredentialProviderId);
                 }
                 else if (credentials is CredentialResponseInsecure i)
                 {
-                    response.SerializedCredentials = CredentialSerializer.GenerateCredentialSerialization(credentials.Domain, credentials.Username, i.Password, this.UsageScenario == UsageScenario.UnlockWorkstation, this.CredentialProvider.CredentialProviderId);
+                    response.SerializedCredentials = serializer.GenerateCredentialSerialization(credentials.Domain, credentials.Username, i.Password, this.UsageScenario == UsageScenario.UnlockWorkstation, this.CredentialProvider.CredentialProviderId);
                 }
                 else
                 {

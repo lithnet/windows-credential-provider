@@ -13,17 +13,15 @@ namespace Lithnet.CredentialProvider
     /// </summary>
     public abstract partial class CredentialProviderBase
     {
-        internal static ILoggerFactory LoggerFactory { get; set; } = NullLoggerFactory.Instance;
-
         private readonly ILogger logger;
-        private readonly ILoggerFactory loggerFactory;
-
         private ICredentialProviderEvents CredentialProviderEvents;
         private ICredentialProviderUserArray credentialProviderUsers;
 
         private IntPtr credentialProviderEventsAdviseContext;
         private bool notifyOnTileCollectionChange;
         private List<CredentialProviderCredential1Tile> tiles;
+
+        internal ILoggerFactory LoggerFactory { get; }
 
         /// <summary>
         /// Gets the GUID of the credential provider
@@ -57,14 +55,10 @@ namespace Lithnet.CredentialProvider
 
         protected CredentialProviderBase()
         {
-            this.loggerFactory = this.GetLoggerFactory();
+            this.LoggerFactory = this.GetLoggerFactory();
 
-            if (CredentialProviderBase.LoggerFactory != this.loggerFactory)
-            {
-                CredentialProviderBase.LoggerFactory = this.loggerFactory;
-            }
 
-            this.logger = this.loggerFactory.CreateLogger(this.GetType());
+            this.logger = this.LoggerFactory.CreateLogger(this.GetType());
             var guidAttribute = (GuidAttribute)(this.GetType().GetCustomAttribute(typeof(GuidAttribute)));
 
             if (guidAttribute == null)
@@ -79,7 +73,7 @@ namespace Lithnet.CredentialProvider
         /// Gets a logger factory. Override this method and provide an implementation of <c ref="ILoggerFactory"/> to enable credential provider logging
         /// </summary>
         /// <returns>An ILoggerFactory instance</returns>
-        public virtual ILoggerFactory GetLoggerFactory() { return NullLoggerFactory.Instance; }
+        protected virtual ILoggerFactory GetLoggerFactory() { return NullLoggerFactory.Instance; }
 
         /// <summary>
         /// Gets a value indicating if the credential provider supports the <c ref="UsageScenario"/> provided by LogonUI or CredUI
@@ -175,6 +169,7 @@ namespace Lithnet.CredentialProvider
 
                 foreach (var control in this.GetControls(this.UsageScenario))
                 {
+                    control.SetLogger(this.LoggerFactory);
                     this.Controls.Add(control);
                 }
 
@@ -205,7 +200,7 @@ namespace Lithnet.CredentialProvider
 
                 this.logger.LogTrace($"Got supplied user {i}: with name {user.GetQualifiedUserName()} and SID {sid}");
 
-                var credentialProviderUser = new CredentialProviderUser(user);
+                var credentialProviderUser = new CredentialProviderUser(this.LoggerFactory, user);
                 users.Add(credentialProviderUser);
 
                 if (this.ShouldIncludeUserTile(credentialProviderUser))

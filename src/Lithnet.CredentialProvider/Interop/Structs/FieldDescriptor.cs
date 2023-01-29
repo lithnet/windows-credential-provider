@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Lithnet.CredentialProvider.Interop
 {
-	[StructLayout(LayoutKind.Sequential, Pack = 8)]
+	[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	internal struct FieldDescriptor
 	{
 		public uint FieldID;

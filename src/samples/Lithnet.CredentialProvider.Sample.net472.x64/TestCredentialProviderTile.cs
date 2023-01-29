@@ -15,7 +15,7 @@ namespace Lithnet.CredentialProvider.Samples
         private SmallLabelControl CheckboxStateControl;
         private SmallLabelControl ComboboxStateControl;
 
-        private ILogger logger = Program.LoggerFactory.CreateLogger<TestCredentialProviderTile>();
+        private ILogger logger = InternalLogger.LoggerFactory.CreateLogger<TestCredentialProviderTile>();
 
         public TestCredentialProviderTile(CredentialProviderBase credentialProvider) : base(credentialProvider)
         {
@@ -65,29 +65,29 @@ namespace Lithnet.CredentialProvider.Samples
         {
             if (UsageScenario == UsageScenario.ChangePassword)
             {
-                PasswordConfirmControl = Controls.GetControl<SecurePasswordTextboxControl>(TestCredentialProviderControlKeys.ConfirmPassword);
+                PasswordConfirmControl = Controls.GetControl<SecurePasswordTextboxControl>(ControlKeys.ConfirmPassword);
             }
 
-            PasswordControl = Controls.GetControl<SecurePasswordTextboxControl>(TestCredentialProviderControlKeys.Password);
-            CheckboxControl = Controls.GetControl<CheckboxControl>(TestCredentialProviderControlKeys.Checkbox);
-            CheckboxStateControl = Controls.GetControl<SmallLabelControl>(TestCredentialProviderControlKeys.LabelCheckboxValue);
+            PasswordControl = Controls.GetControl<SecurePasswordTextboxControl>(ControlKeys.Password);
+            CheckboxControl = Controls.GetControl<CheckboxControl>(ControlKeys.Checkbox);
+            CheckboxStateControl = Controls.GetControl<SmallLabelControl>(ControlKeys.LabelCheckboxValue);
 
-            Controls.GetControl<CommandLinkControl>(TestCredentialProviderControlKeys.CommandLinkCheckboxValue).OnClick = () =>
+            Controls.GetControl<CommandLinkControl>(ControlKeys.CommandLinkCheckboxValue).OnClick = () =>
             {
                 CheckboxControl.IsChecked = !CheckboxControl.IsChecked;
             };
 
             CheckboxControl.PropertyChanged += CheckboxControl_PropertyChanged;
 
-            UsernameControl = Controls.GetControl<TextboxControl>(TestCredentialProviderControlKeys.Username);
-            Controls.GetControl<CommandLinkControl>(TestCredentialProviderControlKeys.CommandLinkUsername).OnClick = () =>
+            UsernameControl = Controls.GetControl<TextboxControl>(ControlKeys.Username);
+            Controls.GetControl<CommandLinkControl>(ControlKeys.CommandLinkUsername).OnClick = () =>
             {
                 Username = Guid.NewGuid().ToString();
             };
 
-            ComboboxStateControl = Controls.GetControl<SmallLabelControl>(TestCredentialProviderControlKeys.LabelComboboxSelectedItem);
+            ComboboxStateControl = Controls.GetControl<SmallLabelControl>(ControlKeys.LabelComboboxSelectedItem);
 
-            ComboboxControl = Controls.GetControl<ComboboxControl>(TestCredentialProviderControlKeys.Combobox);
+            ComboboxControl = Controls.GetControl<ComboboxControl>(ControlKeys.Combobox);
             ComboboxControl.PropertyChanged += ComboboxControl_PropertyChanged;
             ComboboxControl.ComboBoxItems.Add("Item 1");
             ComboboxControl.ComboBoxItems.Add("Item 2");
@@ -95,12 +95,12 @@ namespace Lithnet.CredentialProvider.Samples
             ComboboxControl.SelectedItemIndex = 0;
 
             int count = 3;
-            Controls.GetControl<CommandLinkControl>(TestCredentialProviderControlKeys.CommandLinkComboboxAdd).OnClick = () =>
+            Controls.GetControl<CommandLinkControl>(ControlKeys.CommandLinkComboboxAdd).OnClick = () =>
             {
                 ComboboxControl.ComboBoxItems.Add($"Item {++count}");
             };
 
-            Controls.GetControl<CommandLinkControl>(TestCredentialProviderControlKeys.CommandLinkComboboxRemove).OnClick = () =>
+            Controls.GetControl<CommandLinkControl>(ControlKeys.CommandLinkComboboxRemove).OnClick = () =>
             {
                 if (ComboboxControl.ComboBoxItems.Count > 0)
                 {
@@ -140,7 +140,7 @@ namespace Lithnet.CredentialProvider.Samples
                 domain = Environment.MachineName;
             }
 
-            var spassword = Controls.GetControl<SecurePasswordTextboxControl>(TestCredentialProviderControlKeys.Password).Password;
+            var spassword = Controls.GetControl<SecurePasswordTextboxControl>(ControlKeys.Password).Password;
 
             if (!IsChecked)
             {

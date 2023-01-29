@@ -1,6 +1,6 @@
 ﻿namespace Lithnet.CredentialProvider.Samples
 {
-    internal static class TestCredentialProviderControlKeys
+    internal static class ControlKeys
     {
         internal const string LabelCredentialProvider = "LabelCredentialProvider";
         internal const string ImageCredentialProvider = "ImageCredentialProvider";

@@ -29,7 +29,7 @@ namespace Lithnet.CredentialProvider
             this.Key = source.Key;
             this.Type = source.Type;
             this.FieldTypeGuid = source.FieldTypeGuid;
-
+            this.logger = source.logger;
             this.state = source.State;
             this.interactiveState = source.InteractiveState;
             this.label = source.Label;
@@ -54,7 +54,6 @@ namespace Lithnet.CredentialProvider
             this.options = FieldOptions.None;
 
             this.Key = key;
-            this.logger = CredentialProviderBase.LoggerFactory.CreateLogger(this.GetType());
         }
 
         internal void AssignCredential(ICredentialProviderCredential credential)
@@ -75,6 +74,11 @@ namespace Lithnet.CredentialProvider
         internal ICredentialProviderCredentialEvents Events { get; private set; }
 
         internal ICredentialProviderCredential Credential { get; private set; }
+
+        internal void SetLogger(ILoggerFactory loggerFactory)
+        {
+            this.logger = loggerFactory.CreateLogger(this.GetType());
+        }
 
         /// <summary>
         /// Gets the unique ID associated with this control
