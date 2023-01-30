@@ -53,7 +53,9 @@ namespace Lithnet.CredentialProvider.Interop
         public int scode;
 
         [FieldOffset(0)]
+#pragma warning disable CS0618 // Type or member is obsolete
         [MarshalAs(UnmanagedType.Currency)]
+#pragma warning restore CS0618 // Type or member is obsolete
         public decimal cyVal;
 
         [FieldOffset(0)]

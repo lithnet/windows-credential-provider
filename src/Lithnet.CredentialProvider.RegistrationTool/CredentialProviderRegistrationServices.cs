@@ -8,14 +8,6 @@ namespace Lithnet.CredentialProvider
 {
     public static class CredentialProviderRegistrationServices
     {
-        public static void DisableCredentialProvider<T>() where T : CredentialProviderBase => DisableCredentialProvider(typeof(T));
-
-        public static void UnregisterCredentialProvider<T>() where T : CredentialProviderBase => UnregisterCredentialProvider(typeof(T));
-
-        public static void RegisterCredentialProvider<T>() where T : CredentialProviderBase => RegisterCredentialProvider(typeof(T));
-
-        public static void EnableCredentialProvider<T>() where T : CredentialProviderBase => EnableCredentialProvider(typeof(T));
-
         public static void UnregisterCredentialProvider(Type type)
         {
             DeleteCredentialProviderRegistration(type);

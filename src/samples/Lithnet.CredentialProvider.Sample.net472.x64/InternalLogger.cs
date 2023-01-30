@@ -24,8 +24,8 @@ namespace Lithnet.CredentialProvider.Samples
 
             */
 
-            var logfile = new NLog.Targets.FileTarget("logfile") { FileName = "c:\\file.txt" };
-            config.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Fatal, logfile);
+            //var logfile = new NLog.Targets.FileTarget("logfile") { FileName = "c:\\file.txt" };
+            //config.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Fatal, logfile);
 
             config.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Fatal, logconsole);
 

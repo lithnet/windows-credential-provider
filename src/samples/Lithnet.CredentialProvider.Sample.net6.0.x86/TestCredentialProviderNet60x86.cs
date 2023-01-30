@@ -15,11 +15,6 @@ namespace Lithnet.CredentialProvider.Samples
     {
         private static readonly ILogger logger = InternalLogger.LoggerFactory.CreateLogger<TestCredentialProviderNet60x86>();
 
-        public static void SelfRegister()
-        {
-            CredentialProviderRegistrationServices.RegisterCredentialProvider<TestCredentialProviderNet60x86>();
-        }
-
         protected override ILoggerFactory GetLoggerFactory()
         {
             return InternalLogger.LoggerFactory;
@@ -27,7 +22,6 @@ namespace Lithnet.CredentialProvider.Samples
 
         public override IEnumerable<ControlBase> GetControls(UsageScenario cpus)
         {
-
             var password = new SecurePasswordTextboxControl(ControlKeys.Password, "Password");
 
             if (cpus == UsageScenario.ChangePassword)
