@@ -104,10 +104,9 @@ steps:
     failOnStderr: true
     showWarnings: true
 
-- task: DotNetCoreCLI@2
-  displayName: dotnet push
+- task: NuGetCommand@2
+  displayName: 'NuGet push'
   inputs:
-    command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-    nuGetFeedType: 'external'
+    command: push
+    nuGetFeedType: external
     publishFeedCredentials: 'WindowsCredentialProviderNuget'
