@@ -56,7 +56,7 @@ steps:
     targetType: 'inline'
     script: |
       $files = @()
-      $files += (Get-ChildItem -Recurse -Path "$(Build.ArtifactStagingDirectory)\Lithnet*.dll").FullName
+      $files += (Get-ChildItem -Recurse -Path "$(Build.SourcesDirectory)\Lithnet*.dll").FullName
 
       write-host "Signing $($files.Length) files:"
       write-output $files
@@ -85,12 +85,6 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $files = @()
-      $files += (Get-ChildItem -Path "$(Build.ArtifactStagingDirectory)\Lithnet*.dll").FullName
-
-      write-host "Signing $($files.Length) files:"
-      write-output $files
-
       $cmdargs = @(
         "sign", "$(Build.ArtifactStagingDirectory)\*.nupkg)"
         "-fd", "sha256",
