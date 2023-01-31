@@ -27,9 +27,83 @@ steps:
     zipAfterPublish: false
 
 - task: DotNetCoreCLI@2
+  inputs:
+    command: 'custom'
+    custom: 'tool'
+    arguments: 'update --global NuGetKeyVaultSignTool'
+  displayName: Install NugetKeyVaultSignTool
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'custom'
+    custom: 'tool'
+    arguments: 'update --global azuresigntool'
+  displayName: Install AzureSignTool
+
+- task: PowerShell@2
+  displayName: 'Sign files with AzureSignTool'
+  inputs:
+    targetType: 'inline'
+    script: |
+      $files = @()
+      $files += (Get-ChildItem -Path "$(Build.ArtifactStagingDirectory)\Lithnet*.dll").FullName
+
+      write-host "Signing $($files.Length) files:"
+      write-output $files
+
+      $cmdargs = @(
+        "sign",
+        "-d", "Lithnet Windows Credential Provider",
+        "-kvu", "$(akv.url)",
+        "-kvi", "$(akv.applicationID)",
+        "-kvs", "$(akv.secret)",
+        "-kvt", "$(akv.tenantId)",
+        "-kvc", "$(akv.certificateName)",
+        "-tr", "http://timestamp.digicert.com",
+        "-td", "sha256"
+      )
+
+      $cmdargs += $files
+      
+      & AzureSignTool $cmdargs
+
+    failOnStderr: true
+    showWarnings: true
+
+- task: PowerShell@2
+  displayName: 'Sign Nuget package'
+  inputs:
+    targetType: 'inline'
+    script: |
+      $files = @()
+      $files += (Get-ChildItem -Path "$(Build.ArtifactStagingDirectory)\Lithnet*.dll").FullName
+
+      write-host "Signing $($files.Length) files:"
+      write-output $files
+
+      $cmdargs = @(
+        "sign", "$(Build.ArtifactStagingDirectory)\*.nupkg)"
+        "-fd", "sha256",
+        "-kvu", "$(akv.url)",
+        "-kvi", "$(akv.applicationID)",
+        "-kvs", "$(akv.secret)",
+        "-kvt", "$(akv.tenantId)",
+        "-kvc", "$(akv.certificateName)",
+        "-tr", "http://timestamp.digicert.com",
+        "-td", "sha256"
+      )
+
+      $cmdargs += $files
+      
+      & NuGetKeyVaultSignTool $cmdargs
+
+    failOnStderr: true
+    showWarnings: true
+
+- task: DotNetCoreCLI@2
   displayName: dotnet push
   inputs:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-    nuGetFeedType: 'internal'
-    publishVstsFeed: '91a552bc-359d-4f28-bdbd-f36f71cfdf81'
+    nuGetFeedType: 'external'
+    publishFeedCredentials: 'WindowsCredentialProviderNuget'
