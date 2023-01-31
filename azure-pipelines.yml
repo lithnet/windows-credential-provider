@@ -86,7 +86,7 @@ steps:
     targetType: 'inline'
     script: |
       $cmdargs = @(
-        "sign", "$(Build.ArtifactStagingDirectory)\*.nupkg)"
+        "sign", "$(Build.ArtifactStagingDirectory)\Lithnet.CredentialProvider.$(build.version).nupkg)"
         "-fd", "sha256",
         "-kvu", "$(akv.url)",
         "-kvi", "$(akv.applicationID)",
