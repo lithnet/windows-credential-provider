@@ -21,7 +21,7 @@ steps:
     command: build
     publishWebProjects: false
     arguments: '-c $(buildConfiguration) -p:Version=$(build.version)'
-    projects: '**/*.csproj'
+    projects: 'src/Lithnet.CredentialProvider/Lithnet.CredentialProvider.csproj'
     zipAfterPublish: false
 
 - task: DotNetCoreCLI@2
