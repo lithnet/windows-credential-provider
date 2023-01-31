@@ -96,8 +96,6 @@ steps:
         "-tr", "http://timestamp.digicert.com",
         "-td", "sha256"
       )
-
-      $cmdargs += $files
       
       & NuGetKeyVaultSignTool $cmdargs
 
