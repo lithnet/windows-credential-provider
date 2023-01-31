@@ -8,7 +8,7 @@ variables:
   build.version.minor: 0
   build.version.revision: 0
   build.version.beta: $[counter(format('{0}.{1}.{2}', variables['build.version.major'], variables['build.version.minor'], variables['build.version.revision']), 0)]
-  build.version.suffix: -beta1.$(build.version.revision)
+  build.version.suffix: -beta1.$(build.version.beta)
   build.version: $(build.version.major).$(build.version.minor).$(build.version.revision)$(build.version.suffix)
   build.date: $[format('{0:yyyy}-{0:MM}-{0:dd}T{0:HH}:{0:mm}:{0:ss}', pipeline.startTime)]
 
