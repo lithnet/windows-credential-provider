@@ -7,9 +7,10 @@ variables:
   buildConfiguration: 'Release'
   build.version.major: 1
   build.version.minor: 0
-  build.version.revision: $[counter(format('{0}.{1}', variables['build.version.major'], variables['build.version.minor']), 0)]
-  build.version: $(build.version.major).$(build.version.minor).$(build.version.revision).0
-  build.versionShort: $(build.version.major).$(build.version.minor).$(build.version.revision)
+  build.version.revision: 0
+  build.version.beta: $[counter(format('{0}.{1}.{2}', variables['build.version.major'], variables['build.version.minor'], variables['build.version.revision']), 0)]
+  build.version.suffix: .beta.1-$(build.version.revision)
+  build.version: $(build.version.major).$(build.version.minor).$(build.version.revision)$(build.version.suffix)
   build.date: $[format('{0:yyyy}-{0:MM}-{0:dd}T{0:HH}:{0:mm}:{0:ss}', pipeline.startTime)]
 
 steps:
@@ -20,7 +21,7 @@ steps:
   inputs:
     command: build
     publishWebProjects: false
-    arguments: '-c $(buildConfiguration) -p:Version=$(build.version) =p:PackageOutputPath=$(Build.ArtifactStagingDirectory)'
+    arguments: '-c $(buildConfiguration) -p:Version=$(build.version) -p:PackageOutputPath=$(Build.ArtifactStagingDirectory)'
     projects: 'src/Lithnet.CredentialProvider/Lithnet.CredentialProvider.csproj'
     zipAfterPublish: false
 
