@@ -20,7 +20,7 @@ steps:
   inputs:
     command: build
     publishWebProjects: false
-    arguments: '-c $(buildConfiguration) -p:Version=$(build.version)'
+    arguments: '-c $(buildConfiguration) -p:Version=$(build.version) =p:PackageOutputPath=$(Build.ArtifactStagingDirectory)'
     projects: 'src/Lithnet.CredentialProvider/Lithnet.CredentialProvider.csproj'
     zipAfterPublish: false
 
