@@ -2,7 +2,6 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   build.version.major: 1
@@ -12,6 +11,8 @@ variables:
   build.version.suffix: -beta1.$(build.version.revision)
   build.version: $(build.version.major).$(build.version.minor).$(build.version.revision)$(build.version.suffix)
   build.date: $[format('{0:yyyy}-{0:MM}-{0:dd}T{0:HH}:{0:mm}:{0:ss}', pipeline.startTime)]
+
+name: $(version)
 
 steps:
 - task: NuGetToolInstaller@1
