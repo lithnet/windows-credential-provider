@@ -1,2 +1,172 @@
-# windows-credential-provider
-A library for creating secure Windows Credential Providers in .NET
+![](https://github.com/lithnet/miis-powershell/wiki/images/logo-ex-small.png)
+
+# Windows Credential Provider
+A library for creating secure Windows Credential Providers in .NET, without the COM complications.
+
+The Lithnet Credential Provider for Windows provides an easy way to create a credential provider, without having to implement the COM components. The COM components are still there, but abstracted away into a fully managed implementation.
+
+## Getting started
+* Create a new Class Library project. You can use .NET Framework 4.7.2 or higher, or you can use .NET Core 3.1 or higher) to create your provider
+* Install the package from nuget `Install-Package Lithnet.CredentialProvider`
+* Create a new class an inherit from `redentialProviderBase`, as shown below, replacing the `ProgId` and `Guid` values with ones of your own
+
+```cs
+[ComVisible(true)]
+[ClassInterface(ClassInterfaceType.None)]
+[ProgId("MyCredentialProvider")]
+[Guid("00000000-0000-0000-0000-000000000000")]
+public class MyCredentialProvider : CredentialProviderBase
+{
+}
+```
+
+* Override the `IsUsageScenarioSupported` method, to specify which scenarios you want to support with your credential provider
+
+```cs
+public override bool IsUsageScenarioSupported(UsageScenario cpus, CredUIWinFlags dwFlags)
+{
+    switch (cpus)
+    {
+        case UsageScenario.Logon:
+        case UsageScenario.UnlockWorkstation:
+        case UsageScenario.CredUI:
+        case UsageScenario.ChangePassword:
+            return true;
+
+        default:
+            return false;
+    }
+}
+```
+
+* Override the  `GetControls` method, and provide the controls to render your UI. You can conditionally render based on the current scenario
+```cs
+public override IEnumerable<ControlBase> GetControls(UsageScenario cpus)
+{
+    yield return new TextboxControl("UsernameField", "Username");
+    var password = new SecurePasswordTextboxControl("PasswordField", "Password");
+    yield return password;
+
+    if (cpus == UsageScenario.ChangePassword)
+    {
+        var confirmPassword = new SecurePasswordTextboxControl("ConfirmPasswordField", "Confirm password");
+        yield return confirmPassword;
+        yield return new SubmitButtonControl("SubmitButton", "Submit", confirmPassword);
+    }
+    else
+    {
+        yield return new SubmitButtonControl("SubmitButton", "Submit", password);
+    }
+}
+```
+
+* Windows will ask for the tiles to show. You can determine if you want to show a generic tile (that is, a tile not associated with a user), or a user-specific tile. Windows will provide the list of known users for you to create tiles for.
+```cs
+public override bool ShouldIncludeUserTile(CredentialProviderUser user)
+{
+    return true;
+}
+
+public override bool ShouldIncludeGenericTile()
+{
+    return true;
+}
+
+public override CredentialProviderCredential1Tile CreateGenericTile()
+{
+    return new MyTile(this);
+}
+
+public override CredentialProviderCredential1Tile CreateUserTile(CredentialProviderUser user)
+{
+    return new MyTile(this, user);
+}
+```
+
+* Create your tile class. Inherit from `CredentialProviderCredential2Tile` if you want to create personalized tiles supported by Windows 8 and later, or `CredentialProviderCredential1Tile` if you only want to implement a generic tile. Grab the instances of your controls in the `Initialize` method, so you can attach to their properties to read and respond to value changes. Finally, override the `GetCredentials` method, which is called when the user clicks the submit button.
+
+```cs
+public class MyTile : CredentialProviderCredential2Tile
+{
+    private TextboxControl UsernameControl;
+    private SecurePasswordTextboxControl PasswordControl;
+    private SecurePasswordTextboxControl PasswordConfirmControl;
+
+    public MyTile(CredentialProviderBase credentialProvider) : base(credentialProvider)
+    {
+    }
+
+    public MyTile(CredentialProviderBase credentialProvider, CredentialProviderUser user) : base(credentialProvider, user)
+    {
+    }
+
+    public string Username
+    {
+        get => UsernameControl.Text;
+        set => UsernameControl.Text = value;
+    }
+
+    public SecureString Password
+    {
+        get => PasswordControl.Password;
+        set => PasswordControl.Password = value;
+    }
+
+    public SecureString ConfirmPassword
+    {
+        get => PasswordConfirmControl.Password;
+        set => PasswordConfirmControl.Password = value;
+    }
+
+    public override void Initialize()
+    {
+        if (UsageScenario == UsageScenario.ChangePassword)
+        {
+            this.PasswordConfirmControl = this.Controls.GetControl<SecurePasswordTextboxControl>("ConfirmPasswordField");
+        }
+
+        this.PasswordControl = this.Controls.GetControl<SecurePasswordTextboxControl>("PasswordField");
+        this.UsernameControl = this.Controls.GetControl<TextboxControl>(C"UsernameField");
+
+        Username = this.User?.QualifiedUserName;
+    }
+
+    protected override CredentialResponseBase GetCredentials()
+    {
+        string username;
+        string domain;
+
+        if (Username.Contains("\\"))
+        {
+            domain = Username.Split('\\')[0];
+            username = Username.Split('\\')[1];
+        }
+        else
+        {
+            username = Username;
+            domain = Environment.MachineName;
+        }
+
+        var spassword = Controls.GetControl<SecurePasswordTextboxControl>(ControlKeys.Password).Password;
+
+        return new CredentialResponseSecure()
+        {
+            IsSuccess = true,
+            Password = spassword,
+            Domain = domain,
+            Username = username
+        };
+    }
+}
+```
+
+## How can I contribute to the project?
+* Found an issue and want us to fix it? [Log it](https://github.com/lithnet/windows-credential-provider/issues)
+* Want to fix an issue yourself or add functionality? Clone the project and submit a pull request
+
+## Enteprise support
+Enterprise support is not currently offered for this product.
+
+## Keep up to date
+* [Visit our blog](http://blog.lithnet.io)
+* [Follow us on twitter](https://twitter.com/lithnet_io)![](http://twitter.com/favicon.ico)
