@@ -134,7 +134,7 @@ stages:
         displayName: Publish symbols to internal feed
         inputs:
           command: 'push'
-          packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/*.snupkg'
           nuGetFeedType: 'internal'
           publishVstsFeed: '91a552bc-359d-4f28-bdbd-f36f71cfdf81'
 
