@@ -39,20 +39,7 @@ namespace Lithnet.CredentialProvider.ModuleInit
             var name = new AssemblyName(args.Name);
             Trace.WriteLine($"Request for {args.Name}");
 
-#if NETFRAMEWORK
-            if (name.Name.StartsWith("System.", StringComparison.OrdinalIgnoreCase))
-            {
-                string gacPath = $@"C:\Windows\Microsoft.NET\assembly\GAC_MSIL\{name.Name}\v4.0_4.0.0.0__b03f5f7f11d50a3a\{name.Name}.dll";
-
-                if (File.Exists(gacPath))
-                {
-                    Trace.WriteLine($"System assembly found at {gacPath}");
-                    return Assembly.LoadFrom(gacPath);
-                }
-            }
-#endif
-
-            string assyPath = Path.Combine(basePath, $"{name.Name}.dll");
+     string assyPath = Path.Combine(basePath, $"{name.Name}.dll");
 
 
             if (File.Exists(assyPath))
