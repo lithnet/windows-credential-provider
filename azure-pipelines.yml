@@ -159,7 +159,9 @@ stages:
             deploy:            
               steps:
               - checkout: self
-
+              - task: NuGetToolInstaller@1
+                inputs:
+                  versionSpec: '>=4.9.0-0'
               - task: NuGetCommand@2
                 displayName: 'Publish nuget package to public feed'
                 inputs:
