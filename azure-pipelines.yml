@@ -138,6 +138,11 @@ stages:
           nuGetFeedType: 'internal'
           publishVstsFeed: '91a552bc-359d-4f28-bdbd-f36f71cfdf81'
 
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)'
+          publishLocation: 'pipeline'
+
 - stage: publish
   displayName: Publish packages to production feed
   dependsOn: "build"
