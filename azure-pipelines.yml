@@ -166,6 +166,6 @@ stages:
                 displayName: 'Publish nuget package to public feed'
                 inputs:
                   command: 'push'
-                  packagesToPush: '$(Pipeline.Workspace)/**/*.nupkg;$(Pipeline.Workspace)/**/*.snupkg'
+                  packagesToPush: '$(Pipeline.Workspace)/**/*.nupkg'
                   nuGetFeedType: 'external'
                   publishFeedCredentials: 'WindowsCredentialProviderNuget'
