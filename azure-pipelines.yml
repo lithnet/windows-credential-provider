@@ -11,7 +11,7 @@ variables:
   - name: build.version.minor
     value: 0
   - name: build.version.revision
-    value: $[counter(format('{0}.{1}', variables['build.version.major'], variables['build.version.minor'], 0)]
+    value: $[counter(format('{0}.{1}', variables['build.version.major'], variables['build.version.minor']), 0)]
   - name: build.version
     value: $(build.version.major).$(build.version.minor).$(build.version.revision)
   - name: build.date
