@@ -11,100 +11,151 @@ variables:
   - name: build.version.minor
     value: 0
   - name: build.version.revision
-    value: 0
-  - name: build.version.beta
-    value: $[counter(format('{0}.{1}.{2}', variables['build.version.major'], variables['build.version.minor'], variables['build.version.revision']), 0)]
-  - name: build.version.suffix
-    value: -beta1.$(build.version.beta)
+    value: $[counter(format('{0}.{1}', variables['build.version.major'], variables['build.version.minor'], 0)]
   - name: build.version
-    value: $(build.version.major).$(build.version.minor).$(build.version.revision)$(build.version.suffix)
+    value: $(build.version.major).$(build.version.minor).$(build.version.revision)
   - name: build.date
     value: $[format('{0:yyyy}-{0:MM}-{0:dd}T{0:HH}:{0:mm}:{0:ss}', pipeline.startTime)]
   - group: Azure KeyVault Code Signing
 
-name: $(build.version.major).$(build.version.minor).$(build.version.revision)$(build.version.suffix)
+name: $(build.version.major).$(build.version.minor).$(build.version.revision)
+trigger: none
 
-steps:
-- task: NuGetToolInstaller@1
+stages:
+- stage: build
+  displayName: Build credential provider
+  dependsOn: []
+  jobs:
+    - job: "buildjob"
+      steps:
+      - task: DotNetCoreCLI@2
+        displayName: dotnet build
+        inputs:
+          command: build
+          publishWebProjects: false
+          arguments: '-c $(buildConfiguration) -p:Version=$(build.version) -p:PackageOutputPath=$(Build.ArtifactStagingDirectory)'
+          projects: 'src/Lithnet.CredentialProvider/Lithnet.CredentialProvider.csproj'
+          zipAfterPublish: false
 
-- task: DotNetCoreCLI@2
-  displayName: dotnet build
-  inputs:
-    command: build
-    publishWebProjects: false
-    arguments: '-c $(buildConfiguration) -p:Version=$(build.version) -p:PackageOutputPath=$(Build.ArtifactStagingDirectory)'
-    projects: 'src/Lithnet.CredentialProvider/Lithnet.CredentialProvider.csproj'
-    zipAfterPublish: false
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'custom'
+          custom: 'tool'
+          arguments: 'update --global NuGetKeyVaultSignTool'
+        displayName: Install NugetKeyVaultSignTool
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'custom'
-    custom: 'tool'
-    arguments: 'update --global NuGetKeyVaultSignTool'
-  displayName: Install NugetKeyVaultSignTool
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'custom'
+          custom: 'tool'
+          arguments: 'update --global azuresigntool'
+        displayName: Install AzureSignTool
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'custom'
-    custom: 'tool'
-    arguments: 'update --global azuresigntool'
-  displayName: Install AzureSignTool
+      - task: PowerShell@2
+        displayName: 'Sign files with AzureSignTool'
+        inputs:
+          targetType: 'inline'
+          script: |
+            $files = @()
+            $files += (Get-ChildItem -Recurse -Path "$(Build.SourcesDirectory)\Lithnet*.dll").FullName
 
-- task: PowerShell@2
-  displayName: 'Sign files with AzureSignTool'
-  inputs:
-    targetType: 'inline'
-    script: |
-      $files = @()
-      $files += (Get-ChildItem -Recurse -Path "$(Build.SourcesDirectory)\Lithnet*.dll").FullName
+            write-host "Signing $($files.Length) files:"
+            write-output $files
 
-      write-host "Signing $($files.Length) files:"
-      write-output $files
+            $cmdargs = @(
+              "sign",
+              "-d", "Lithnet Windows Credential Provider",
+              "-kvu", "$(akv.url)",
+              "-kvi", "$(akv.applicationID)",
+              "-kvs", "$(akv.secret)",
+              "-kvt", "$(akv.tenantId)",
+              "-kvc", "$(akv.certificateName)",
+              "-tr", "http://timestamp.digicert.com",
+              "-td", "sha256"
+            )
 
-      $cmdargs = @(
-        "sign",
-        "-d", "Lithnet Windows Credential Provider",
-        "-kvu", "$(akv.url)",
-        "-kvi", "$(akv.applicationID)",
-        "-kvs", "$(akv.secret)",
-        "-kvt", "$(akv.tenantId)",
-        "-kvc", "$(akv.certificateName)",
-        "-tr", "http://timestamp.digicert.com",
-        "-td", "sha256"
-      )
+            $cmdargs += $files
+        
+            & AzureSignTool $cmdargs
+          failOnStderr: true
+          showWarnings: true
 
-      $cmdargs += $files
-      
-      & AzureSignTool $cmdargs
+      - task: PowerShell@2
+        displayName: 'Sign Nuget package'
+        inputs:
+          targetType: 'inline'
+          script: |
+            $cmdargs = @(
+              "sign", "$(Build.ArtifactStagingDirectory)\Lithnet.CredentialProvider.$(build.version).nupkg"
+              "-fd", "sha256",
+              "-kvu", "$(akv.url)",
+              "-kvi", "$(akv.applicationID)",
+              "-kvs", "$(akv.secret)",
+              "-kvt", "$(akv.tenantId)",
+              "-kvc", "$(akv.certificateName)",
+              "-tr", "http://timestamp.digicert.com",
+              "-td", "sha256"
+            )
+        
+            & NuGetKeyVaultSignTool $cmdargs
+          failOnStderr: true
+          showWarnings: true
 
-    failOnStderr: true
-    showWarnings: true
+      - task: PowerShell@2
+        displayName: 'Sign Nuget symbols package'
+        inputs:
+          targetType: 'inline'
+          script: |
+            $cmdargs = @(
+              "sign", "$(Build.ArtifactStagingDirectory)\Lithnet.CredentialProvider.$(build.version).snupkg"
+              "-fd", "sha256",
+              "-kvu", "$(akv.url)",
+              "-kvi", "$(akv.applicationID)",
+              "-kvs", "$(akv.secret)",
+              "-kvt", "$(akv.tenantId)",
+              "-kvc", "$(akv.certificateName)",
+              "-tr", "http://timestamp.digicert.com",
+              "-td", "sha256"
+            )
+        
+            & NuGetKeyVaultSignTool $cmdargs
+          failOnStderr: true
+          showWarnings: true
 
-- task: PowerShell@2
-  displayName: 'Sign Nuget package'
-  inputs:
-    targetType: 'inline'
-    script: |
-      $cmdargs = @(
-        "sign", "$(Build.ArtifactStagingDirectory)\Lithnet.CredentialProvider.$(build.version).nupkg"
-        "-fd", "sha256",
-        "-kvu", "$(akv.url)",
-        "-kvi", "$(akv.applicationID)",
-        "-kvs", "$(akv.secret)",
-        "-kvt", "$(akv.tenantId)",
-        "-kvc", "$(akv.certificateName)",
-        "-tr", "http://timestamp.digicert.com",
-        "-td", "sha256"
-      )
-      
-      & NuGetKeyVaultSignTool $cmdargs
+      - task: DotNetCoreCLI@2
+        displayName: Publish package to internal feed
+        inputs:
+          command: 'push'
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+          nuGetFeedType: 'internal'
+          publishVstsFeed: '91a552bc-359d-4f28-bdbd-f36f71cfdf81'
 
-    failOnStderr: true
-    showWarnings: true
+      - task: DotNetCoreCLI@2
+        displayName: Publish symbols to internal feed
+        inputs:
+          command: 'push'
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+          nuGetFeedType: 'internal'
+          publishVstsFeed: '91a552bc-359d-4f28-bdbd-f36f71cfdf81'
 
-- task: NuGetCommand@2
-  displayName: 'NuGet push'
-  inputs:
-    command: push
-    nuGetFeedType: external
-    publishFeedCredentials: 'WindowsCredentialProviderNuget'
+- stage: publish
+  displayName: Publish packages to production feed
+  dependsOn: "build"
+  jobs:
+      - deployment: 'PublishPackages'
+        environment: 'Production'
+        displayName: Publish packages to public nuget feed 
+        pool:
+          vmImage: windows-2022 
+        strategy:
+          runOnce:
+            deploy:            
+              steps:
+              - checkout: self
+
+              - task: NuGetCommand@2
+                displayName: 'Publish nuget package to public feed'
+                inputs:
+                  command: push
+                  nuGetFeedType: external
+                  publishFeedCredentials: 'WindowsCredentialProviderNuget'
