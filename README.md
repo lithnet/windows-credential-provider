@@ -6,7 +6,7 @@ A library for creating secure Windows Credential Providers in .NET, without the 
 The Lithnet Credential Provider for Windows provides an easy way to create a credential provider, without having to implement the COM components. The COM components are still there, but abstracted away into a fully managed implementation.
 
 ## Getting started
-* Create a new Class Library project. You can use .NET Framework 4.7.2 or higher, or you can use .NET Core 3.1 or higher) to create your provider
+* Create a new Class Library project. You can use .NET Framework 4.6.1 or higher, or you can use .NET 6.0 or higher) to create your provider
 * Install the package from nuget `Install-Package Lithnet.CredentialProvider`
 * Create a new class an inherit from `CredentialProviderBase`, as shown below, replacing the `ProgId` and `Guid` values with ones of your own
 
