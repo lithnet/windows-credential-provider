@@ -83,7 +83,7 @@ public override CredentialTile2 CreateUserTile(CredentialProviderUser user)
 }
 ```
 
-* Create your tile class. Inherit from `CredentialTile2` if you want to create personalized tiles supported by Windows 8 and later, or `CredentialTile2` if you only want to implement a generic tile. Grab the instances of your controls in the `Initialize` method, so you can attach to their properties to read and respond to value changes. Finally, override the `GetCredentials` method, which is called when the user clicks the submit button.
+* Create your tile class. Inherit from `CredentialTile2` if you want to create personalized tiles supported by Windows 8 and later, or `CredentialTile1` if you only want to implement a generic tile. Grab the instances of your controls in the `Initialize` method, so you can attach to their properties to read and respond to value changes. Finally, override the `GetCredentials` method, which is called when the user clicks the submit button.
 
 ```cs
 public class MyTile : CredentialTile2
