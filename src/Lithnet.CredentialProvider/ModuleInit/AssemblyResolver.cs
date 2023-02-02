@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Threading;
 
 namespace Lithnet.CredentialProvider.ModuleInit
 {
@@ -11,7 +10,9 @@ namespace Lithnet.CredentialProvider.ModuleInit
     {
         private static string basePath;
 
+#pragma warning disable CA2255
         [ModuleInitializer]
+#pragma warning restore CA2255
         public static void AttachResolver()
         {
             Trace.WriteLine($"Loaded assembly {Assembly.GetExecutingAssembly().Location}");
@@ -39,7 +40,7 @@ namespace Lithnet.CredentialProvider.ModuleInit
             var name = new AssemblyName(args.Name);
             Trace.WriteLine($"Request for {args.Name}");
 
-     string assyPath = Path.Combine(basePath, $"{name.Name}.dll");
+            string assyPath = Path.Combine(basePath, $"{name.Name}.dll");
 
 
             if (File.Exists(assyPath))

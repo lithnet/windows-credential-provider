@@ -4,16 +4,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Lithnet.CredentialProvider
 {
-    /// <summary>
-    /// Represents a user credential tile that implements the functionality of <see cref="CredentialProviderCredential1Tile"/> and <see cref="CredentialProviderCredential2Tile"/>, but includes support for dynamically updating bitmap images.
-    /// </summary>
-    /// <remarks>This interface is public, but undocumented by Microsoft. It is recommended to use <see cref="CredentialProviderCredential2Tile"/> tiles unless this specific functionality is needed</remarks>
-    public abstract class CredentialProviderCredential3Tile : CredentialProviderCredential2Tile, ICredentialProviderCredential3
+    internal abstract partial class CredentialTile3 : ICredentialProviderCredential3
     {
-        protected CredentialProviderCredential3Tile(CredentialProviderBase credentialProvider) : this(credentialProvider, null) { }
-
-        protected CredentialProviderCredential3Tile(CredentialProviderBase credentialProvider, CredentialProviderUser user) : base(credentialProvider, user) { }
-
         int ICredentialProviderCredential3.GetBitmapBufferValue(uint dwFieldID, out uint pImageBufferSize, out IntPtr ppImageBuffer)
         {
             this.logger.LogTrace($"Called GetBitmapBufferValue {dwFieldID}");
@@ -41,19 +33,15 @@ namespace Lithnet.CredentialProvider
             }
         }
 
-        ///<inheritdoc cref="ICredentialProviderCredential2.GetUserSid(out string)"/>
         int ICredentialProviderCredential3.GetUserSid(out string sid)
         {
             return ((ICredentialProviderCredential2)this).GetUserSid(out sid);
         }
 
-        ///<inheritdoc cref="CredentialProviderCredential1Tile"/>
         int ICredentialProviderCredential3.SetSelected(out int pbAutoLogon)
         {
             return ((ICredentialProviderCredential)this).SetSelected(out pbAutoLogon);
         }
-
-        ///<inheritdoc cref="CredentialProviderCredential1Tile"/>
 
         int ICredentialProviderCredential3.SetDeselected()
         {
@@ -119,14 +107,17 @@ namespace Lithnet.CredentialProvider
         {
             return ((ICredentialProviderCredential)this).GetSerialization(out pcpgsr, out pcpcs, out ppszOptionalStatusText, out pcpsiOptionalStatusIcon);
         }
+
         int ICredentialProviderCredential3.UnAdvise()
         {
             return ((ICredentialProviderCredential)this).UnAdvise();
         }
+
         int ICredentialProviderCredential3.Advise(ICredentialProviderCredentialEvents pcpce)
         {
             return ((ICredentialProviderCredential)this).Advise(pcpce);
         }
+
         int ICredentialProviderCredential3.ReportResult(int ntsStatus, int ntsSubstatus, out string ppszOptionalStatusText, out StatusIcon pcpsiOptionalStatusIcon)
         {
             return ((ICredentialProviderCredential)this).ReportResult(ntsStatus, ntsSubstatus, out ppszOptionalStatusText, out pcpsiOptionalStatusIcon);

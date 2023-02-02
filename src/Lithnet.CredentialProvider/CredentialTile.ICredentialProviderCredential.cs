@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Lithnet.CredentialProvider
 {
-    public partial class CredentialProviderCredential1Tile : ICredentialProviderCredential
+    public partial class CredentialTile : ICredentialProviderCredential
     {
         int ICredentialProviderCredential.Advise(ICredentialProviderCredentialEvents pcpce)
         {
@@ -54,7 +54,7 @@ namespace Lithnet.CredentialProvider
                 return HRESULT.E_FAIL;
             }
         }
-       
+
         int ICredentialProviderCredential.SetSelected(out int pbAutoLogon)
         {
             pbAutoLogon = 0;
@@ -73,7 +73,7 @@ namespace Lithnet.CredentialProvider
                 return HRESULT.E_FAIL;
             }
         }
-       
+
         int ICredentialProviderCredential.SetDeselected()
         {
             try
@@ -145,7 +145,7 @@ namespace Lithnet.CredentialProvider
                         else
                         {
                             ppsz = Marshal.SecureStringToCoTaskMemUnicode(p.Password);
-                            this.logger.LogCritical($"0x{ppsz.ToString("X16")} - Put password for outbound GetStringValue");
+                            this.logger.LogWarningDebug($"0x{ppsz.ToString("X16")} - Put password for outbound GetStringValue");
                         }
 
                         return HRESULT.S_OK;
@@ -160,7 +160,7 @@ namespace Lithnet.CredentialProvider
                         else
                         {
                             ppsz = Marshal.StringToCoTaskMemUni(i.Password);
-                            this.logger.LogCritical($"0x{ppsz.ToString("X16")} - Put password for outbound GetStringValue");
+                            this.logger.LogWarningDebug($"0x{ppsz.ToString("X16")} - Put password for outbound GetStringValue");
                         }
 
                         return HRESULT.S_OK;
@@ -316,7 +316,7 @@ namespace Lithnet.CredentialProvider
         {
             try
             {
-                this.logger.LogTrace($"0x{psz.ToString("X16")} - Incoming SetStringValue: field {dwFieldID}");
+                this.logger.LogWarningDebug($"0x{psz.ToString("X16")} - Incoming SetStringValue: field {dwFieldID}");
 
                 if (this.Controls.TryGetControl(dwFieldID, out var instance))
                 {
@@ -328,8 +328,7 @@ namespace Lithnet.CredentialProvider
 
                     if (instance.Type == FieldType.PasswordText && instance is SecurePasswordTextboxControl p)
                     {
-                        this.logger.LogCritical($"0x{psz.ToString("X16")} - Incoming password in SetStringValue");
-
+                        this.logger.LogWarningDebug($"0x{psz.ToString("X16")} - Incoming password in SetStringValue");
                         p.SetPasswordInternal(psz.IntPtrToSecureString());
                         PInvoke.SecureZeroMemory(psz, (uint)(psz.Wcslen() * 2));
                         return HRESULT.S_OK;
@@ -337,8 +336,7 @@ namespace Lithnet.CredentialProvider
 
                     if (instance.Type == FieldType.PasswordText && instance is InsecurePasswordTextboxControl i)
                     {
-                        this.logger.LogCritical($"0x{psz.ToString("X16")} - Incoming password in SetStringValue");
-
+                        this.logger.LogWarningDebug($"0x{psz.ToString("X16")} - Incoming password in SetStringValue");
                         i.SetPasswordInternal(Marshal.PtrToStringUni(psz));
                         PInvoke.SecureZeroMemory(psz, (uint)(psz.Wcslen() * 2));
                         return HRESULT.S_OK;

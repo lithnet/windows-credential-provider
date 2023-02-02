@@ -10,11 +10,11 @@ namespace Lithnet.CredentialProvider
         {
             try
             {
-                this.logger.LogTrace($"SetUserArray");
+                this.logger.LogTrace("SetUserArray");
 
                 if (users.GetCount(out uint count) != HRESULT.S_OK)
                 {
-                    this.logger.LogTrace($"ICredentialProviderUserArray.GetCount failed");
+                    this.logger.LogTrace("ICredentialProviderUserArray.GetCount failed");
                     return HRESULT.S_FALSE;
                 }
 

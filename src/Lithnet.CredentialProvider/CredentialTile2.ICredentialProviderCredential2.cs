@@ -4,26 +4,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Lithnet.CredentialProvider
 {
-    /// <summary>
-    /// Represents a 'v2' user credential tile that implements the functionality of <see cref="CredentialProviderCredential1Tile"/>, and includes support for personalized tile, where a single user tile is shown, with multiple logon options grouped within it. 
-    /// </summary>
-    /// <remarks>Inheriting from this class enables you to provide a v2 credential tile. V2 credential tiles were introduced in Windows 8. See the Microsoft documentation on ICredentialProviderCredential2 for more information</remarks>
-    /// <inheritdoc/>
-    public abstract class CredentialProviderCredential2Tile : CredentialProviderCredential1Tile, ICredentialProviderCredential2
+    public abstract partial class CredentialTile2 : ICredentialProviderCredential2
     {
-        public CredentialProviderUser User { get; }
-
-        public override bool IsGenericTile => this.User == null;
-
-        public GenericTileDisplayMode GenericTileDisplayMode { get; set; }
-
-        protected CredentialProviderCredential2Tile(CredentialProviderBase credentialProvider) : this(credentialProvider, null) { }
-
-        protected CredentialProviderCredential2Tile(CredentialProviderBase credentialProvider, CredentialProviderUser user) : base(credentialProvider)
-        {
-            this.User = user;
-        }
-
         int ICredentialProviderCredential2.GetUserSid(out string sid)
         {
             sid = null;

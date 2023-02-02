@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security;
 using Lithnet.CredentialProvider.Interop;
@@ -40,7 +39,7 @@ namespace Lithnet.CredentialProvider
                     if (this.password?.Length > 0)
                     {
                         var ptr = Marshal.SecureStringToCoTaskMemUnicode(this.password);
-                        Trace.WriteLine($"0x:{ptr.ToString("X16")} - CONTROL: Created ptr for outgoing SetFieldString");
+                        this.logger.LogWarningDebug($"0x:{ptr.ToString("X16")} - CONTROL: Created ptr for outgoing SetFieldString");
                         this.Events?.SetFieldString(this.Credential, this.Id, ptr);
                     }
                     else

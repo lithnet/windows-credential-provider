@@ -19,7 +19,7 @@ namespace Lithnet.CredentialProvider
 
         private IntPtr credentialProviderEventsAdviseContext;
         private bool notifyOnTileCollectionChange;
-        private List<CredentialProviderCredential1Tile> tiles;
+        private List<CredentialTile> tiles;
 
         internal ILoggerFactory LoggerFactory { get; }
 
@@ -46,7 +46,7 @@ namespace Lithnet.CredentialProvider
         /// <summary>
         /// Gets a list of the tiles created for this credential provider
         /// </summary>
-        public IReadOnlyList<CredentialProviderCredential1Tile> Tiles { get; private set; }
+        public IReadOnlyList<CredentialTile> Tiles { get; private set; }
 
         /// <summary>
         /// Provides access to the serialized input data provided by CredUI
@@ -106,7 +106,7 @@ namespace Lithnet.CredentialProvider
         /// Adds additional user tiles to the collection, and notifies LogonUI that new tiles are available
         /// </summary>
         /// <param name="tiles">One or more credential tiles to add</param>
-        public void AddAdditionalUserTiles(params CredentialProviderCredential1Tile[] tiles)
+        public void AddAdditionalUserTiles(params CredentialTile[] tiles)
         {
             if (tiles == null)
             {
@@ -129,7 +129,7 @@ namespace Lithnet.CredentialProvider
         /// Removes one or more user tiles, and notifies LogonUI that tiles have been removed
         /// </summary>
         /// <param name="tiles">The crendential tiles to remove</param>
-        public void RemoveUserTiles(params CredentialProviderCredential1Tile[] tiles)
+        public void RemoveUserTiles(params CredentialTile[] tiles)
         {
             if (tiles == null)
             {
@@ -147,13 +147,13 @@ namespace Lithnet.CredentialProvider
         /// <summary>
         /// This method is used to generate the generic tile for this credential provider. This is called when <c ref="ShouldIncludeGenericTile"/> return true
         /// </summary>
-        public abstract CredentialProviderCredential1Tile CreateGenericTile();
+        public abstract CredentialTile CreateGenericTile();
 
         /// <summary>
         /// Creates a credential tile for the specified user
         /// </summary>
         /// <param name="user">The user to create the tile for</param>
-        public abstract CredentialProviderCredential1Tile CreateUserTile(CredentialProviderUser user);
+        public abstract CredentialTile2 CreateUserTile(CredentialProviderUser user);
 
         /// <summary>
         /// This method is called when the LogonUI or CredUI provides inbound credential data. Override this method to respond to the incoming data.
@@ -177,11 +177,11 @@ namespace Lithnet.CredentialProvider
             }
         }
 
-        private List<CredentialProviderCredential1Tile> GenerateSuppliedUserTiles()
+        private List<CredentialTile> GenerateSuppliedUserTiles()
         {
             this.BuildControls();
 
-            var tiles = new List<CredentialProviderCredential1Tile>();
+            var tiles = new List<CredentialTile>();
 
             var users = new List<CredentialProviderUser>();
 
@@ -203,25 +203,37 @@ namespace Lithnet.CredentialProvider
                 var credentialProviderUser = new CredentialProviderUser(this.LoggerFactory, user);
                 users.Add(credentialProviderUser);
 
-                if (this.ShouldIncludeUserTile(credentialProviderUser))
+                try
                 {
-                    var userTile = this.CreateUserTile(credentialProviderUser);
-                    if (userTile != null)
+                    if (this.ShouldIncludeUserTile(credentialProviderUser))
                     {
-                        tiles.Add(userTile);
-                        userTile.Initialize();
+                        var userTile = this.CreateUserTile(credentialProviderUser);
+                        if (userTile != null)
+                        {
+                            tiles.Add(userTile);
+                            userTile.Initialize();
+                        }
                     }
+                }
+                catch (NotImplementedException)
+                {
                 }
             }
 
-            if (this.ShouldIncludeGenericTile())
+            try
             {
-                var genericTile = this.CreateGenericTile();
-                if (genericTile != null)
+                if (this.ShouldIncludeGenericTile())
                 {
-                    tiles.Add(genericTile);
-                    genericTile.Initialize();
+                    var genericTile = this.CreateGenericTile();
+                    if (genericTile != null)
+                    {
+                        tiles.Add(genericTile);
+                        genericTile.Initialize();
+                    }
                 }
+            }
+            catch (NotImplementedException)
+            {
             }
 
             this.SuppliedUsers = users.AsReadOnly();
@@ -231,7 +243,7 @@ namespace Lithnet.CredentialProvider
 
         private void SetupTiles()
         {
-            this.tiles = new List<CredentialProviderCredential1Tile>(this.GenerateSuppliedUserTiles());
+            this.tiles = new List<CredentialTile>(this.GenerateSuppliedUserTiles());
             this.Tiles = this.tiles.AsReadOnly();
         }
 

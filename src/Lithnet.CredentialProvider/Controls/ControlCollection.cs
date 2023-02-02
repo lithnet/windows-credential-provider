@@ -20,7 +20,7 @@ namespace Lithnet.CredentialProvider
 
         internal ControlCollection() { }
 
-        internal ControlCollection(CredentialProviderCredential1Tile credential)
+        internal ControlCollection(CredentialTile credential)
         {
             this.credential = credential;
         }

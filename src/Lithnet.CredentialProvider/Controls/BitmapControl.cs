@@ -53,10 +53,9 @@ namespace Lithnet.CredentialProvider
                 {
                     this.bitmap = value;
 
-                    if (this.Events is ICredentialProviderCredentialEvents3 e)
+                    if (this.Events is ICredentialProviderCredentialEvents2 e)
                     {
-                        var buffer = this.GetBitmapBuffer(out uint size);
-                        e.SetFieldBitmapBuffer(this.Credential, this.Id, size, buffer);
+                        e.SetFieldBitmap(this.Credential, this.Id, this.GetHBitmap());
                     }
 
                     this.RaisePropertyChanged();

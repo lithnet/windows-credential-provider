@@ -1,10 +1,18 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Security;
+using Microsoft.Extensions.Logging;
 
 namespace Lithnet.CredentialProvider.Interop
 {
     internal static class InternalExtensions
     {
+        [Conditional("DEBUG")]
+        internal static void LogWarningDebug(this ILogger logger, string message)
+        {
+            logger.LogWarning(message);
+        }
+
         internal static unsafe int Wcslen(this IntPtr addr)
         {
             const int maxLength = int.MaxValue;

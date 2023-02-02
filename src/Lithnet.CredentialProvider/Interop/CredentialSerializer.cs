@@ -19,8 +19,7 @@ namespace Lithnet.CredentialProvider.Interop
         {
             var authPackage = PInvoke.LookupAuthenticationPackage(CredProviderConstants.NEGOSSP_NAME_A);
             var pData = this.SerializeKerbLogon(domain, username, password, isWorkstationUnlock ? KerbLogonSubmitType.WorkstationUnlockLogon : KerbLogonSubmitType.InteractiveLogon, out int size);
-
-            this.logger.LogTrace($"0x{pData.ToString("X16")} - Serializer: Password got packed into ");
+            this.logger.LogWarningDebug($"0x{pData.ToString("X16")} - Serializer: Password got packed into ");
 
             return new CredentialSerialization()
             {
@@ -35,8 +34,7 @@ namespace Lithnet.CredentialProvider.Interop
         {
             var authPackage = PInvoke.LookupAuthenticationPackage(CredProviderConstants.NEGOSSP_NAME_A);
             var pData = this.SerializeKerbLogon(domain, username, password, isWorkstationUnlock ? KerbLogonSubmitType.WorkstationUnlockLogon : KerbLogonSubmitType.InteractiveLogon, out int size);
-
-            this.logger.LogTrace($"0x{pData.ToString("X16")}: Password got packed");
+            this.logger.LogWarningDebug($"0x{pData.ToString("X16")}: Password got packed");
 
             return new CredentialSerialization()
             {
@@ -131,25 +129,23 @@ namespace Lithnet.CredentialProvider.Interop
             try
             {
                 buff = Marshal.SecureStringToCoTaskMemUnicode(password);
-                this.logger.LogTrace($"0x{buff.ToString("X16")} - Serializer: Unprotected password");
-
+                this.logger.LogWarningDebug($"0x{buff.ToString("X16")} - Serializer: Unprotected password");
                 IntPtr targetPositionToCopyTo = (IntPtr)(buffer + logon->Password.Buffer.ToInt64());
 
                 Buffer.MemoryCopy(buff.ToPointer(), targetPositionToCopyTo.ToPointer(), logon->Password.Length, password.Length * sizeof(char));
 
-                this.logger.LogTrace($"0x{targetPositionToCopyTo.ToString("X16")} - Serializer: Copied unprotected password into LSA string buffer");
+                this.logger.LogWarningDebug($"0x{targetPositionToCopyTo.ToString("X16")} - Serializer: Copied unprotected password into LSA string buffer");
             }
             finally
             {
                 if (buff != IntPtr.Zero)
                 {
                     Marshal.ZeroFreeCoTaskMemUnicode(buff);
-                    this.logger.LogTrace($"0x{buff.ToString("X16")} - Serializer: Freed Unprotected password");
+                    this.logger.LogWarningDebug($"0x{buff.ToString("X16")} - Serializer: Freed Unprotected password");
                 }
             }
 
-            this.logger.LogTrace($"0x{((IntPtr)buffer).ToString("X16")} - Serializer: Put password");
-
+            this.logger.LogWarningDebug($"0x{((IntPtr)buffer).ToString("X16")} - Serializer: Put password");
             return pBuffer;
         }
     }

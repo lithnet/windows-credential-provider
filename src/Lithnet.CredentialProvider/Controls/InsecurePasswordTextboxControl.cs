@@ -24,6 +24,7 @@ namespace Lithnet.CredentialProvider
         /// <param name="key">The unique key for this control</param>
         /// <param name="label">The label associated with the control</param>
         public InsecurePasswordTextboxControl(string key, string label) : base(key, label, FieldType.PasswordText) { }
+
         private InsecurePasswordTextboxControl(InsecurePasswordTextboxControl source) : base(source) { }
 
         /// <summary>
@@ -40,7 +41,7 @@ namespace Lithnet.CredentialProvider
                     if (this.password?.Length > 0)
                     {
                         var ptr = Marshal.StringToCoTaskMemUni(this.password);
-                        this.logger.LogTrace($"0x:{ptr.ToString("X16")} - Created ptr for outgoing SetFieldString");
+                        this.logger.LogWarningDebug($"0x:{ptr.ToString("X16")} - Created ptr for outgoing SetFieldString");
                         this.Events?.SetFieldString(this.Credential, this.Id, ptr);
                     }
                     else

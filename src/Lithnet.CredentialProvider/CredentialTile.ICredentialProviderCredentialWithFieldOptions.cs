@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Lithnet.CredentialProvider
 {
-    public abstract partial class CredentialProviderCredential1Tile : ICredentialProviderCredentialWithFieldOptions
+    public abstract partial class CredentialTile : ICredentialProviderCredentialWithFieldOptions
     {
         int ICredentialProviderCredentialWithFieldOptions.GetFieldOptions(uint dwFieldID, out FieldOptions options)
         {
