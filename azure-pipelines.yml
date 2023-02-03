@@ -154,12 +154,6 @@ stages:
           targetPath: '$(Build.ArtifactStagingDirectory)/cp'
           publishLocation: 'pipeline'
 
-      - task: PublishPipelineArtifact@1
-        displayName: Publish PS artifact
-        inputs:
-          targetPath: '$(Build.ArtifactStagingDirectory)/ps'
-          publishLocation: 'pipeline'
-
 - stage: build_psmodule
   displayName: Build PowerShell module
   dependsOn: []
@@ -218,8 +212,9 @@ stages:
           showWarnings: true
 
       - task: PublishPipelineArtifact@1
+        displayName: Publish PS artifact
         inputs:
-          targetPath: '$(Build.ArtifactStagingDirectory)\ps'
+          targetPath: '$(Build.ArtifactStagingDirectory)/ps'
           publishLocation: 'pipeline'
 
 - stage: publish_nuget
