@@ -157,6 +157,7 @@ stages:
         inputs:
           targetPath: '$(Build.ArtifactStagingDirectory)/cp'
           publishLocation: 'pipeline'
+          artifact: cp
 
 - stage: build_psmodule
   displayName: Build PowerShell module
@@ -223,6 +224,7 @@ stages:
         inputs:
           targetPath: '$(Build.ArtifactStagingDirectory)/ps'
           publishLocation: 'pipeline'
+          artifact: ps
 
 - stage: publish_nuget
   displayName: Publish packages to production feed
@@ -238,6 +240,8 @@ stages:
             deploy:            
               steps:
               - checkout: none
+              - download: current
+                artifact: cp
               - task: NuGetToolInstaller@1
                 inputs:
                   versionSpec: '>=4.9.0-0'
@@ -263,6 +267,8 @@ stages:
             deploy:            
               steps:
               - checkout: none
+              - download: current
+                artifact: ps
               - task: PowerShell@2
                 displayName: 'Upload module to PSGallery'
                 inputs:
