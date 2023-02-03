@@ -161,11 +161,12 @@ stages:
     - job: "build_ps_job"
       steps:
       - task: DotNetCoreCLI@2
-        displayName: dotnet build
+        displayName: dotnet publish
         inputs:
-          command: build
-          arguments: '-c $(buildConfiguration) -p:Version=$(build.version) --output "$(Build.ArtifactStagingDirectory)\ps"' 
-          projects: 'src/Lithnet.CredentialProvider.Management/Lithnet.CredentialProvider.Management.csproj'
+          command: 'publish'
+          arguments: '-c $(buildConfiguration) -p:Version=$(build.version) --output "$(Build.ArtifactStagingDirectory)\ps"'
+          zipAfterPublish: false
+          modifyOutputPath: false
 
       - task: PowerShell@2
         displayName: 'Update manifest version'
