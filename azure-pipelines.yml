@@ -83,7 +83,7 @@ stages:
           nobuild: true
           includesymbols: true
           versioningScheme: 'off'
-          
+
       - task: DotNetCoreCLI@2
         inputs:
           command: 'custom'
@@ -165,6 +165,8 @@ stages:
         displayName: dotnet publish
         inputs:
           command: 'publish'
+          publishWebProjects: false
+          projects: 'src/Lithnet.CredentialProvider.Management/Lithnet.CredentialProvider.Management.csproj'
           arguments: '-c $(buildConfiguration) -p:Version=$(build.version) --output "$(Build.ArtifactStagingDirectory)\ps"'
           zipAfterPublish: false
           modifyOutputPath: false
