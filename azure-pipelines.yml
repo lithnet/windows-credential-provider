@@ -29,7 +29,7 @@ stages:
   displayName: Build credential provider
   dependsOn: []
   jobs:
-    - job: "build-provider-job"
+    - job: "build_provider_job"
       steps:
       - task: DotNetCoreCLI@2
         displayName: dotnet build
@@ -153,11 +153,11 @@ stages:
           targetPath: '$(Build.ArtifactStagingDirectory)/ps'
           publishLocation: 'pipeline'
 
-- stage: build-psmodule
+- stage: build_psmodule
   displayName: Build PowerShell module
   dependsOn: []
   jobs:
-    - job: "build-ps-job"
+    - job: "build_ps_job"
       steps:
       - task: DotNetCoreCLI@2
         displayName: dotnet build
@@ -217,9 +217,9 @@ stages:
           targetPath: '$(Build.ArtifactStagingDirectory)\ps'
           publishLocation: 'pipeline'
 
-- stage: publish-nuget
+- stage: publish_nuget
   displayName: Publish packages to production feed
-  dependsOn: "build-provider"
+  dependsOn: "build_provider"
   jobs:
       - deployment: 'PublishPackages'
         environment: 'Production'
@@ -242,9 +242,9 @@ stages:
                   nuGetFeedType: 'external'
                   publishFeedCredentials: 'WindowsCredentialProviderNuget'
 
-- stage: publish-psgallery
+- stage: publish_psgallery
   displayName: Publish module to PSGallery
-  dependsOn: "build-psmodule"
+  dependsOn: "build_psmodule"
   jobs:
       - deployment: 'PublishPackages'
         environment: 'Production'
