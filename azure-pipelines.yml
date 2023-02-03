@@ -267,12 +267,15 @@ stages:
             deploy:            
               steps:
               - checkout: none
-              - download: current
-                artifact: ps
+              - task: DownloadPipelineArtifact@2
+                inputs:
+                  buildType: 'current'
+                  artifactName: 'ps'
+                  targetPath: '$(Pipeline.Workspace)/Lithnet.CredentialProvider.Management'
               - task: PowerShell@2
                 displayName: 'Upload module to PSGallery'
                 inputs:
                   targetType: 'inline'
                   script: |
-                    Publish-Module -Path "$(Pipeline.Workspace)\ps" -NuGetApiKey "$(psgallery.apikey)"
+                    Publish-Module -Path "$(Pipeline.Workspace)\Lithnet.CredentialProvider.Management" -NuGetApiKey "$(psgallery.apikey)"
 
