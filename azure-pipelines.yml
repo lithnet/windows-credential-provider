@@ -81,7 +81,7 @@ stages:
           nobuild: true
           includesymbols: true
           arguments: '-p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\cp'
-          projects: 'src/Lithnet.CredentialProvider/Lithnet.CredentialProvider.csproj'
+          packagesToPack: 'src/Lithnet.CredentialProvider/Lithnet.CredentialProvider.csproj'
 
       - task: DotNetCoreCLI@2
         inputs:
