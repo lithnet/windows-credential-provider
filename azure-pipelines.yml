@@ -227,7 +227,7 @@ stages:
           artifact: ps
 
 - stage: publish_nuget
-  displayName: Publish packages to production feed
+  displayName: Publish CredProvider to nuget.org
   dependsOn: "build_provider"
   jobs:
       - deployment: 'PublishPackages'
@@ -254,7 +254,7 @@ stages:
                   publishFeedCredentials: 'WindowsCredentialProviderNuget'
 
 - stage: publish_psgallery
-  displayName: Publish module to PSGallery
+  displayName: Publish PS Module to PSGallery
   dependsOn: "build_psmodule"
   jobs:
       - deployment: 'PublishPackages'
