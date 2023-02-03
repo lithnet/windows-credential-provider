@@ -35,17 +35,8 @@ stages:
         displayName: dotnet build
         inputs:
           command: build
-          publishWebProjects: false
-          arguments: '-c $(buildConfiguration) -p:Version=$(build.version) -p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\cp'
+          arguments: '-c $(buildConfiguration) -p:Version=$(build.version) -p:GeneratePackageOnBuild=false'
           projects: 'src/Lithnet.CredentialProvider/Lithnet.CredentialProvider.csproj'
-          zipAfterPublish: false
-
-      - task: DotNetCoreCLI@2
-        inputs:
-          command: 'custom'
-          custom: 'tool'
-          arguments: 'update --global NuGetKeyVaultSignTool'
-        displayName: Install NugetKeyVaultSignTool
 
       - task: DotNetCoreCLI@2
         inputs:
@@ -82,6 +73,22 @@ stages:
             & AzureSignTool $cmdargs
           failOnStderr: true
           showWarnings: true
+
+      - task: DotNetCoreCLI@2
+        displayName: dotnet pack
+        inputs:
+          command: pack
+          nobuild: true
+          includesymbols: true
+          arguments: '-p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\cp'
+          projects: 'src/Lithnet.CredentialProvider/Lithnet.CredentialProvider.csproj'
+
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'custom'
+          custom: 'tool'
+          arguments: 'update --global NuGetKeyVaultSignTool'
+        displayName: Install NugetKeyVaultSignTool
 
       - task: PowerShell@2
         displayName: 'Sign Nuget package'
@@ -163,10 +170,8 @@ stages:
         displayName: dotnet build
         inputs:
           command: build
-          publishWebProjects: false
           arguments: '-c $(buildConfiguration) -p:Version=$(build.version) --output "$(Build.ArtifactStagingDirectory)\ps"' 
           projects: 'src/Lithnet.CredentialProvider.Management/Lithnet.CredentialProvider.Management.csproj'
-          zipAfterPublish: false
 
       - task: PowerShell@2
         displayName: 'Update manifest version'
@@ -238,7 +243,7 @@ stages:
                 displayName: 'Publish nuget package to public feed'
                 inputs:
                   command: 'push'
-                  packagesToPush: '$(Pipeline.Workspace)/**/*.nupkg'
+                  packagesToPush: '$(Pipeline.Workspace)/cp/*.nupkg'
                   nuGetFeedType: 'external'
                   publishFeedCredentials: 'WindowsCredentialProviderNuget'
 
