@@ -77,12 +77,13 @@ stages:
       - task: DotNetCoreCLI@2
         displayName: dotnet pack
         inputs:
-          command: pack
+          command: 'pack'
+          packagesToPack: 'src/Lithnet.CredentialProvider/Lithnet.CredentialProvider.csproj'
+          packDirectory: '$(Build.ArtifactStagingDirectory)\cp'
           nobuild: true
           includesymbols: true
-          arguments: '-p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\cp'
-          packagesToPack: 'src/Lithnet.CredentialProvider/Lithnet.CredentialProvider.csproj'
-
+          versioningScheme: 'off'
+          
       - task: DotNetCoreCLI@2
         inputs:
           command: 'custom'
