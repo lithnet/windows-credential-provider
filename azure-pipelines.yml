@@ -274,5 +274,5 @@ stages:
                 inputs:
                   targetType: 'inline'
                   script: |
-                    Publish-Module -Path "$(Pipeline.Workspace)\ps\Lithnet.CredentialProvider.Management.psd1" -NuGetApiKey "$(psgallery.apikey)"
+                    Publish-Module -Name Lithnet.CredentialProvider.Management -Path "$(Pipeline.Workspace)\ps" -NuGetApiKey "$(psgallery.apikey)"
 
