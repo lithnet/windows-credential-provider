@@ -231,7 +231,7 @@ stages:
   dependsOn: "build_provider"
   jobs:
       - deployment: 'PublishPackages'
-        environment: 'Production'
+        environment: 'Public nuget feed'
         displayName: Publish packages to public nuget feed 
         pool:
           vmImage: windows-2022 
@@ -258,7 +258,7 @@ stages:
   dependsOn: "build_psmodule"
   jobs:
       - deployment: 'PublishPackages'
-        environment: 'Production'
+        environment: 'PowerShell Gallery'
         displayName: Publish packages to public PSGallery
         pool:
           vmImage: windows-2022 
@@ -274,5 +274,5 @@ stages:
                 inputs:
                   targetType: 'inline'
                   script: |
-                    Publish-Module -Name Lithnet.CredentialProvider.Management -Path "$(Pipeline.Workspace)\ps" -NuGetApiKey "$(psgallery.apikey)"
+                    Publish-Module -Path "$(Pipeline.Workspace)\ps" -NuGetApiKey "$(psgallery.apikey)"
 
