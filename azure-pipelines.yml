@@ -82,7 +82,8 @@ stages:
           packDirectory: '$(Build.ArtifactStagingDirectory)\cp'
           nobuild: true
           includesymbols: true
-          versioningScheme: 'off'
+          versioningScheme: 'byEnvVar'
+          versionEnvVar: 'build.version'
 
       - task: DotNetCoreCLI@2
         inputs:
