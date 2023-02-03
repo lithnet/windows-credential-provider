@@ -16,6 +16,8 @@ variables:
     value: -beta1
   - name: build.version
     value: $(build.version.major).$(build.version.minor).$(build.version.revision)$(build.version.suffix)
+  - name: build.versionShort
+    value: $(build.version.major).$(build.version.minor).$(build.version.revision)
   - name: build.date
     value: $[format('{0:yyyy}-{0:MM}-{0:dd}T{0:HH}:{0:mm}:{0:ss}', pipeline.startTime)]
   - group: Azure KeyVault Code Signing
@@ -177,7 +179,7 @@ stages:
         inputs:
           targetType: 'inline'
           script: |
-            Update-ModuleManifest -Path "$(Build.ArtifactStagingDirectory)\ps\Lithnet.CredentialProvider.Management.psd1" -ModuleVersion "$(build.version)"
+            Update-ModuleManifest -Path "$(Build.ArtifactStagingDirectory)\ps\Lithnet.CredentialProvider.Management.psd1" -ModuleVersion "$(build.versionShort)"
 
       - task: DotNetCoreCLI@2
         inputs:
