@@ -192,14 +192,14 @@ public class MyTile : CredentialTile2
 ## Installing the credential provider
 You can use our PowerShell module to automatically register your credential provider.
 
-```ps
+```powershell
 Install-Module Lithnet.CredentialProvider.Management
 Register-CredentialProvider -File C:\path-to-your-provider.dll
 ```
 
 You can disable, enable, and uninstall the provider with the following commands
 
-```ps
+```powershell
 Disable-CredentialProvider -File C:\path-to-your-provider.dll
 Enable-CredentialProvider -File C:\path-to-your-provider.dll
 Unregister-CredentialProvider -File C:\path-to-your-provider.dll
