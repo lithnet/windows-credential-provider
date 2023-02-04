@@ -200,9 +200,9 @@ Register-CredentialProvider -File C:\path-to-your-provider.dll
 You can disable, enable, and uninstall the provider with the following commands
 
 ```powershell
-Disable-CredentialProvider -File C:\path-to-your-provider.dll
-Enable-CredentialProvider -File C:\path-to-your-provider.dll
-Unregister-CredentialProvider -File C:\path-to-your-provider.dll
+Disable-CredentialProvider -File "C:\path-to-your-provider.dll"
+Enable-CredentialProvider -File "C:\path-to-your-provider.dll"
+Unregister-CredentialProvider -File "C:\path-to-your-provider.dll"
 ```
 
 Once the credential provider is registered, you can use the included `Lithnet.CredentialProvider.TestApp.x64` from this repository to invoke CredUI and see your credential provider in action.
