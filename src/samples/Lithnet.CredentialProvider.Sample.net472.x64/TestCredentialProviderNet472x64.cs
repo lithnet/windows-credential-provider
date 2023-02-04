@@ -84,12 +84,12 @@ namespace Lithnet.CredentialProvider.Samples
             return true;
         }
 
-        public override CredentialProviderCredential1Tile CreateGenericTile()
+        public override CredentialTile CreateGenericTile()
         {
             return new TestCredentialProviderTile(this);
         }
 
-        public override CredentialProviderCredential1Tile CreateUserTile(CredentialProviderUser user)
+        public override CredentialTile2 CreateUserTile(CredentialProviderUser user)
         {
             return new TestCredentialProviderTile(this, user);
         }

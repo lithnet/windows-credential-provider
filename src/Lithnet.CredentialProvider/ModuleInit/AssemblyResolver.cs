@@ -42,11 +42,10 @@ namespace Lithnet.CredentialProvider.ModuleInit
 
             string assyPath = Path.Combine(basePath, $"{name.Name}.dll");
 
-
             if (File.Exists(assyPath))
             {
                 Trace.WriteLine($"Found at {assyPath}");
-                return Assembly.Load(assyPath);
+                return Assembly.LoadFrom(assyPath);
             }
 
             Trace.WriteLine($"Assembly {args.Name} not found");

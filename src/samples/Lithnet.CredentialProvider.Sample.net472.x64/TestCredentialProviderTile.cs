@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Lithnet.CredentialProvider.Samples
 {
-    public class TestCredentialProviderTile : CredentialProviderCredential2Tile
+    public class TestCredentialProviderTile : CredentialTile2
     {
         private TextboxControl UsernameControl;
         private SecurePasswordTextboxControl PasswordControl;
