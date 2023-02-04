@@ -185,7 +185,27 @@ public class MyTile : CredentialTile2
         };
     }
 }
+
+* Build your project and you have a functional credential provider!
+
 ```
+## Installing the credential provider
+You can use our PowerShell module to automatically register your credential provider.
+
+```ps
+Install-Module Lithnet.CredentialProvider.Management
+Register-CredentialProvider -File C:\path-to-your-provider.dll
+```
+
+You can disable, enable, and uninstall the provider with the following commands
+
+```ps
+Disable-CredentialProvider -File C:\path-to-your-provider.dll
+Enable-CredentialProvider -File C:\path-to-your-provider.dll
+Unregister-CredentialProvider -File C:\path-to-your-provider.dll
+```
+
+Once the credential provider is registered, you can use the included `Lithnet.CredentialProvider.TestApp.x64` from this repository to invoke CredUI and see your credential provider in action.
 
 ## How can I contribute to the project?
 * Found an issue and want us to fix it? [Log it](https://github.com/lithnet/windows-credential-provider/issues)
