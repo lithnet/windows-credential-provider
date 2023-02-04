@@ -21,8 +21,7 @@ variables:
   - name: build.date
     value: $[format('{0:yyyy}-{0:MM}-{0:dd}T{0:HH}:{0:mm}:{0:ss}', pipeline.startTime)]
   - group: Azure KeyVault Code Signing
-  - group: PSGallery
-
+  
 name: $(build.version.major).$(build.version.minor).$(build.version.revision)$(build.version.suffix)
 trigger: none
 
@@ -159,73 +158,6 @@ stages:
           publishLocation: 'pipeline'
           artifact: cp
 
-- stage: build_psmodule
-  displayName: Build PowerShell module
-  dependsOn: []
-  jobs:
-    - job: "build_ps_job"
-      steps:
-      - task: DotNetCoreCLI@2
-        displayName: dotnet publish
-        inputs:
-          command: 'publish'
-          publishWebProjects: false
-          projects: 'src/Lithnet.CredentialProvider.Management/Lithnet.CredentialProvider.Management.csproj'
-          arguments: '-c $(buildConfiguration) -p:Version=$(build.version) --output "$(Build.ArtifactStagingDirectory)\ps"'
-          zipAfterPublish: false
-          modifyOutputPath: false
-
-      - task: PowerShell@2
-        displayName: 'Update manifest version'
-        inputs:
-          targetType: 'inline'
-          script: |
-            Update-ModuleManifest -Path "$(Build.ArtifactStagingDirectory)\ps\Lithnet.CredentialProvider.Management.psd1" -ModuleVersion "$(build.versionShort)"
-
-      - task: DotNetCoreCLI@2
-        inputs:
-          command: 'custom'
-          custom: 'tool'
-          arguments: 'update --global azuresigntool'
-        displayName: Install AzureSignTool
-
-      - task: PowerShell@2
-        displayName: 'Sign files with AzureSignTool'
-        inputs:
-          targetType: 'inline'
-          script: |
-            $files = @()
-            $files += (Get-ChildItem -Recurse -Path "$(Build.ArtifactStagingDirectory)\ps\Lithnet*.dll").FullName
-            $files += (Get-ChildItem -Recurse -Path "$(Build.ArtifactStagingDirectory)\ps\Lithnet*.psd1").FullName
-
-            write-host "Signing $($files.Length) files:"
-            write-output $files
-
-            $cmdargs = @(
-              "sign",
-              "-d", "Lithnet Windows Credential Provider",
-              "-kvu", "$(akv.url)",
-              "-kvi", "$(akv.applicationID)",
-              "-kvs", "$(akv.secret)",
-              "-kvt", "$(akv.tenantId)",
-              "-kvc", "$(akv.certificateName)",
-              "-tr", "http://timestamp.digicert.com",
-              "-td", "sha256"
-            )
-
-            $cmdargs += $files
-        
-            & AzureSignTool $cmdargs
-          failOnStderr: true
-          showWarnings: true
-
-      - task: PublishPipelineArtifact@1
-        displayName: Publish PS artifact
-        inputs:
-          targetPath: '$(Build.ArtifactStagingDirectory)/ps'
-          publishLocation: 'pipeline'
-          artifact: ps
-
 - stage: publish_nuget
   displayName: Publish CredProvider to nuget.org
   dependsOn: "build_provider"
@@ -252,30 +184,3 @@ stages:
                   packagesToPush: '$(Pipeline.Workspace)/cp/*.nupkg'
                   nuGetFeedType: 'external'
                   publishFeedCredentials: 'WindowsCredentialProviderNuget'
-
-- stage: publish_psgallery
-  displayName: Publish PS Module to PSGallery
-  dependsOn: "build_psmodule"
-  jobs:
-      - deployment: 'PublishPackages'
-        environment: 'PowerShell Gallery'
-        displayName: Publish packages to public PSGallery
-        pool:
-          vmImage: windows-2022 
-        strategy:
-          runOnce:
-            deploy:            
-              steps:
-              - checkout: none
-              - task: DownloadPipelineArtifact@2
-                inputs:
-                  buildType: 'current'
-                  artifactName: 'ps'
-                  targetPath: '$(Pipeline.Workspace)/Lithnet.CredentialProvider.Management'
-              - task: PowerShell@2
-                displayName: 'Upload module to PSGallery'
-                inputs:
-                  targetType: 'inline'
-                  script: |
-                    Publish-Module -Path "$(Pipeline.Workspace)\Lithnet.CredentialProvider.Management" -NuGetApiKey "$(psgallery.apikey)"
-
