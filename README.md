@@ -64,6 +64,12 @@ public override bool IsUsageScenarioSupported(UsageScenario cpus, CredUIWinFlags
 ```cs
 public override IEnumerable<ControlBase> GetControls(UsageScenario cpus)
 {
+    yield return new CredentialProviderLabelControl("CredProviderLabel", "My first credential provider");
+    
+    var infoLabel = new SmallLabelControl("InfoLabel", "Enter your username and password please!");
+    infoLabel.State = FieldState.DisplayInSelectedTile;
+    yield return infoLabel;
+
     yield return new TextboxControl("UsernameField", "Username");
     var password = new SecurePasswordTextboxControl("PasswordField", "Password");
     yield return password;
@@ -147,7 +153,7 @@ public class MyTile : CredentialTile2
         }
 
         this.PasswordControl = this.Controls.GetControl<SecurePasswordTextboxControl>("PasswordField");
-        this.UsernameControl = this.Controls.GetControl<TextboxControl>(C"UsernameField");
+        this.UsernameControl = this.Controls.GetControl<TextboxControl>("UsernameField");
 
         Username = this.User?.QualifiedUserName;
     }
@@ -168,7 +174,7 @@ public class MyTile : CredentialTile2
             domain = Environment.MachineName;
         }
 
-        var spassword = Controls.GetControl<SecurePasswordTextboxControl>(ControlKeys.Password).Password;
+        var spassword = Controls.GetControl<SecurePasswordTextboxControl>("PasswordField").Password;
 
         return new CredentialResponseSecure()
         {
