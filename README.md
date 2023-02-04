@@ -1,6 +1,9 @@
 ![](https://github.com/lithnet/miis-powershell/wiki/images/logo-ex-small.png)
 
 # Windows Credential Provider
+![](https://img.shields.io/nuget/vpre/lithnet.credentialprovider?label=Current%20prerelease)![](https://img.shields.io/nuget/v/Lithnet.CredentialProvider?label=Current%20release)
+![](https://img.shields.io/nuget/dt/lithnet.credentialprovider)
+
 A library for creating secure Windows Credential Providers in .NET, without the COM complications.
 
 The Lithnet Credential Provider for Windows provides an easy way to create a credential provider, without having to implement the COM components. The COM components are still there, but abstracted away into a fully managed implementation.
