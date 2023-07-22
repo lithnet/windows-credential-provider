@@ -3,8 +3,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Lithnet.CredentialProvider.Interop;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Lithnet.CredentialProvider
 {
@@ -19,8 +17,7 @@ namespace Lithnet.CredentialProvider
         private FieldInteractiveState interactiveState;
         private string label;
         private FieldOptions options;
-        private protected ILogger logger = NullLogger.Instance;
-
+        private protected ILogger logger;
         public event PropertyChangedEventHandler PropertyChanged;
 
         private protected ControlBase(ControlBase source)
@@ -52,7 +49,7 @@ namespace Lithnet.CredentialProvider
             this.state = FieldState.DisplayInSelectedTile;
             this.interactiveState = FieldInteractiveState.None;
             this.options = FieldOptions.None;
-
+            this.logger = TraceLoggerFactory.Instance.CreateLogger(this.GetType());
             this.Key = key;
         }
 

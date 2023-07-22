@@ -13,7 +13,7 @@ variables:
   - name: build.version.revision
     value: $[counter(format('{0}.{1}', variables['build.version.major'], variables['build.version.minor']), 0)]
   - name: build.version.suffix
-    value: -beta1
+    value:
   - name: build.version
     value: $(build.version.major).$(build.version.minor).$(build.version.revision)$(build.version.suffix)
   - name: build.versionShort

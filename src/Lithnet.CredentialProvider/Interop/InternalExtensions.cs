@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Security;
-using Microsoft.Extensions.Logging;
 
 namespace Lithnet.CredentialProvider.Interop
 {

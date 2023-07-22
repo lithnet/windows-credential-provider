@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using Lithnet.CredentialProvider.Interop;
-using Microsoft.Extensions.Logging;
 
 namespace Lithnet.CredentialProvider
 {

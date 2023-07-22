@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Lithnet.CredentialProvider.Interop;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Lithnet.CredentialProvider
 {
@@ -73,7 +71,7 @@ namespace Lithnet.CredentialProvider
         /// Gets a logger factory. Override this method and provide an implementation of <c ref="ILoggerFactory"/> to enable credential provider logging
         /// </summary>
         /// <returns>An ILoggerFactory instance</returns>
-        protected virtual ILoggerFactory GetLoggerFactory() { return NullLoggerFactory.Instance; }
+        protected virtual ILoggerFactory GetLoggerFactory() { return TraceLoggerFactory.Instance; }
 
         /// <summary>
         /// Gets a value indicating if the credential provider supports the <c ref="UsageScenario"/> provided by LogonUI or CredUI
@@ -128,7 +126,7 @@ namespace Lithnet.CredentialProvider
         /// <summary>
         /// Removes one or more user tiles, and notifies LogonUI that tiles have been removed
         /// </summary>
-        /// <param name="tiles">The crendential tiles to remove</param>
+        /// <param name="tiles">The credential tiles to remove</param>
         public void RemoveUserTiles(params CredentialTile[] tiles)
         {
             if (tiles == null)

@@ -1,6 +1,5 @@
 ﻿using System;
 using Lithnet.CredentialProvider.Interop;
-using Microsoft.Extensions.Logging;
 
 namespace Lithnet.CredentialProvider
 {
