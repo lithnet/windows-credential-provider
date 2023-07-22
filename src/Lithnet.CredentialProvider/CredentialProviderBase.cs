@@ -11,7 +11,7 @@ namespace Lithnet.CredentialProvider
     /// </summary>
     public abstract partial class CredentialProviderBase
     {
-        private readonly ILogger logger;
+        private readonly ICredentialProviderLogger logger;
         private ICredentialProviderEvents CredentialProviderEvents;
         private ICredentialProviderUserArray credentialProviderUsers;
 
@@ -19,7 +19,7 @@ namespace Lithnet.CredentialProvider
         private bool notifyOnTileCollectionChange;
         private List<CredentialTile> tiles;
 
-        internal ILoggerFactory LoggerFactory { get; }
+        internal ICredentialProviderLoggerFactory LoggerFactory { get; }
 
         /// <summary>
         /// Gets the GUID of the credential provider
@@ -71,7 +71,7 @@ namespace Lithnet.CredentialProvider
         /// Gets a logger factory. Override this method and provide an implementation of <c ref="ILoggerFactory"/> to enable credential provider logging
         /// </summary>
         /// <returns>An ILoggerFactory instance</returns>
-        protected virtual ILoggerFactory GetLoggerFactory() { return TraceLoggerFactory.Instance; }
+        protected virtual ICredentialProviderLoggerFactory GetLoggerFactory() { return TraceLoggerFactory.Instance; }
 
         /// <summary>
         /// Gets a value indicating if the credential provider supports the <c ref="UsageScenario"/> provided by LogonUI or CredUI

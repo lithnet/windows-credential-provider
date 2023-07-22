@@ -7,7 +7,7 @@ namespace Lithnet.CredentialProvider.Interop
     internal static class InternalExtensions
     {
         [Conditional("DEBUG")]
-        internal static void LogWarningDebug(this ILogger logger, string message)
+        internal static void LogWarningDebug(this ICredentialProviderLogger logger, string message)
         {
             logger.LogWarning(message);
         }

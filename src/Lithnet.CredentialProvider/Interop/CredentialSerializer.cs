@@ -7,9 +7,9 @@ namespace Lithnet.CredentialProvider.Interop
 {
     internal class CredentialSerializer
     {
-        private readonly ILogger logger;
+        private readonly ICredentialProviderLogger logger;
 
-        public CredentialSerializer(ILoggerFactory loggerFactory)
+        public CredentialSerializer(ICredentialProviderLoggerFactory loggerFactory)
         {
             this.logger = loggerFactory.CreateLogger<CredentialSerializer>();
         }

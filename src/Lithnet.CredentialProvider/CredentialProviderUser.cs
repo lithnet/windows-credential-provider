@@ -10,7 +10,7 @@ namespace Lithnet.CredentialProvider
     public class CredentialProviderUser
     {
         internal readonly ICredentialProviderUser User;
-        private readonly ILogger logger;
+        private readonly ICredentialProviderLogger logger;
         private string qualifiedUserName;
         private string sid;
         private string userName;
@@ -18,7 +18,7 @@ namespace Lithnet.CredentialProvider
         private string logonStatus;
         private string providerId;
 
-        internal CredentialProviderUser(ILoggerFactory loggerFactory, ICredentialProviderUser user)
+        internal CredentialProviderUser(ICredentialProviderLoggerFactory loggerFactory, ICredentialProviderUser user)
         {
             this.User = user;
             this.logger = loggerFactory.CreateLogger<CredentialProviderUser>();

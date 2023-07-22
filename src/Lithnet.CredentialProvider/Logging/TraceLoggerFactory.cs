@@ -2,20 +2,20 @@
 
 namespace Lithnet.CredentialProvider
 {
-    public class TraceLoggerFactory : ILoggerFactory
+    public class TraceLoggerFactory : ICredentialProviderLoggerFactory
     {
-        public ILogger CreateLogger(Type type)
+        public ICredentialProviderLogger CreateLogger(Type type)
         {
             return new TraceLogger();
         }
 
-        public ILogger CreateLogger<T>()
+        public ICredentialProviderLogger CreateLogger<T>()
         {
             return new TraceLogger();
         }
 
         private static readonly TraceLoggerFactory loggerFactory = new TraceLoggerFactory();
 
-        public static ILoggerFactory Instance => loggerFactory;
+        public static ICredentialProviderLoggerFactory Instance => loggerFactory;
     }
 }

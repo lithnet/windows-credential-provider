@@ -17,7 +17,7 @@ namespace Lithnet.CredentialProvider
         private FieldInteractiveState interactiveState;
         private string label;
         private FieldOptions options;
-        private protected ILogger logger;
+        private protected ICredentialProviderLogger logger;
         public event PropertyChangedEventHandler PropertyChanged;
 
         private protected ControlBase(ControlBase source)
@@ -72,7 +72,7 @@ namespace Lithnet.CredentialProvider
 
         internal ICredentialProviderCredential Credential { get; private set; }
 
-        internal void SetLogger(ILoggerFactory loggerFactory)
+        internal void SetLogger(ICredentialProviderLoggerFactory loggerFactory)
         {
             this.logger = loggerFactory.CreateLogger(this.GetType());
         }

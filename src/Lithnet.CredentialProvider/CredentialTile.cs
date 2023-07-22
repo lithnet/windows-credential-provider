@@ -10,7 +10,7 @@ namespace Lithnet.CredentialProvider
     /// <remarks>Inheriting from this class enables you to provide a v1 credential tile. V1 credential tiles were introduced in Windows Vista. These tiles are not personalized. See the Microsoft documentation on ICredentialProviderCredential for more information</remarks>
     public abstract partial class CredentialTile
     {
-        private protected readonly ILogger logger;
+        private protected readonly ICredentialProviderLogger logger;
         private protected ICredentialProviderCredentialEvents events;
         private protected ICredentialProviderCredentialEvents2 events2;
 
