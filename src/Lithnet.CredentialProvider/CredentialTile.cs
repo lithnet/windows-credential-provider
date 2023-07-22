@@ -50,6 +50,11 @@ namespace Lithnet.CredentialProvider
         public UsageScenario UsageScenario => this.CredentialProvider.UsageScenario;
 
         /// <summary>
+        /// Gets the flags provided by CredUI
+        /// </summary>
+        public CredUIWinFlags CredUIFlags => this.CredentialProvider.CredUIFlags;
+
+        /// <summary>
         /// Gets a list of controls assigned to this tile
         /// </summary>
         public ControlCollection Controls

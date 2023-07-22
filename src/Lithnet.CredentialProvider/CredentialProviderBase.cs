@@ -37,6 +37,11 @@ namespace Lithnet.CredentialProvider
         public UsageScenario UsageScenario { get; private set; }
 
         /// <summary>
+        /// Gets the flags provided by CredUI
+        /// </summary>
+        public CredUIWinFlags CredUIFlags { get; private set; }
+
+        /// <summary>
         /// Gets the list of controls used by this credential provider
         /// </summary>
         public ControlCollection Controls { get; private set; }

@@ -14,6 +14,7 @@ namespace Lithnet.CredentialProvider
                 this.logger.LogTrace($"SetUsageScenario: Usage: {cpus} flags: {dwFlags}");
 
                 this.UsageScenario = cpus;
+                this.CredUIFlags = dwFlags;
 
                 if (this.IsUsageScenarioSupported(cpus, (CredUIWinFlags)dwFlags))
                 {
@@ -41,7 +42,7 @@ namespace Lithnet.CredentialProvider
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "UnAdvSetSerializationise failed");
+                this.logger.LogError(ex, "SetSerialization failed");
                 return HRESULT.E_FAIL;
             }
         }
