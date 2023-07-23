@@ -7,27 +7,27 @@ namespace Lithnet.CredentialProvider
     {
         public void LogError(Exception ex, string v)
         {
-            Trace.TraceError($"{v}\r\n\r\n{ex?.ToString()}");
+            Trace.WriteLine($"{v}\r\n\r\n{ex?.ToString()}");
         }
 
         public void LogError(string v)
         {
-            Trace.TraceError(v);
+            Trace.WriteLine(v);
         }
 
         public void LogInformation(string message)
         {
-            Trace.TraceInformation(message);
+            Trace.WriteLine(message);
         }
 
         public void LogTrace(string v)
         {
-            Trace.TraceInformation(v);
+            Trace.WriteLine(v);
         }
 
         public void LogWarning(string message)
         {
-            Trace.TraceWarning(message);
+            Trace.WriteLine(message);
         }
     }
 }
