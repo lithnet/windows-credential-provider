@@ -435,8 +435,7 @@ namespace Lithnet.CredentialProvider
                 ppszOptionalStatusText = response.OptionalStatusText;
                 pcpsiOptionalStatusIcon = response.OptionalStatusIcon;
 
-
-                this.logger.LogTrace($"GetSerialization is returning {pcpgsr}, with auth provider {pcpcs.AuthenticationPackage}, status {pcpsiOptionalStatusIcon}: {ppszOptionalStatusText}");
+                this.logger.LogTrace($"GetSerialization is returning {pcpgsr}, with auth provider {pcpcs.AuthenticationPackage}, status icon '{pcpsiOptionalStatusIcon}' and status text '{ppszOptionalStatusText}'");
 
                 return response.HResult;
             }
