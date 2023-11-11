@@ -13,11 +13,11 @@ namespace Lithnet.CredentialProvider.Samples
     [Guid("90592593-f4d3-4f62-aa83-9cf1f7b590e0")]
     public class TestCredentialProviderNet60x86 : CredentialProviderBase
     {
-        private static readonly ILogger logger = InternalLogger.LoggerFactory.CreateLogger<TestCredentialProviderNet60x86>();
+        private static readonly ICredentialProviderLogger logger = InternalLoggerFactory.Instance.CreateLogger<TestCredentialProviderNet60x86>();
 
-        protected override ILoggerFactory GetLoggerFactory()
+        protected override ICredentialProviderLoggerFactory GetLoggerFactory()
         {
-            return InternalLogger.LoggerFactory;
+            return InternalLoggerFactory.Instance;
         }
 
         public override IEnumerable<ControlBase> GetControls(UsageScenario cpus)

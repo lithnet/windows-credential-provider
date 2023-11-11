@@ -15,7 +15,7 @@ namespace Lithnet.CredentialProvider.Samples
         private SmallLabelControl CheckboxStateControl;
         private SmallLabelControl ComboboxStateControl;
 
-        private ILogger logger = InternalLogger.LoggerFactory.CreateLogger<TestCredentialProviderTile>();
+        private ICredentialProviderLogger logger = InternalLoggerFactory.Instance.CreateLogger<TestCredentialProviderTile>();
 
         public TestCredentialProviderTile(CredentialProviderBase credentialProvider) : base(credentialProvider)
         {

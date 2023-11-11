@@ -52,6 +52,16 @@ namespace Lithnet.CredentialProvider
         public IReadOnlyList<CredentialTile> Tiles { get; private set; }
 
         /// <summary>
+        /// Gets a value that indicates if this credential provider is loaded by Logon UI
+        /// </summary>
+        public bool IsLogonUI => this.UsageScenario == UsageScenario.Logon;
+
+        /// <summary>
+        /// Gets a value that indicates if the credential provider is loaded by Consent UI (eg UAC prompt)
+        /// </summary>
+        public bool IsConsentUI => this.UsageScenario == UsageScenario.CredUI && ConsentUIData.IsConsentUIParent();
+
+        /// <summary>
         /// Provides access to the serialized input data provided by CredUI
         /// </summary>
         public CredentialSerialization InboundSerialization { get; private set; }
