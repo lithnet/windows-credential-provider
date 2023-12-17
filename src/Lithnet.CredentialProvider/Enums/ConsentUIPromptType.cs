@@ -1,9 +1,9 @@
 ﻿namespace Lithnet.CredentialProvider
 {
-    public enum ElevationType
+    public enum ConsentUIPromptType
     {
-        Unknown1 = 0,
-        Unknown2 = 1,
+        Unknown = 0,
+        AutomaticAdmin = 1,
         Consent = 2,
         Credentials = 3
     }

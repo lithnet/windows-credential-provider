@@ -10,7 +10,7 @@ namespace Lithnet.CredentialProvider.Interop
 
         // 64 
 
-        public IntPtr hUnknown1; // 8 
+        public ConsentUIMsiAction MsiAction; // 8 
         public IntPtr oProductName; // 8
 
         // 64 + 16 == 80

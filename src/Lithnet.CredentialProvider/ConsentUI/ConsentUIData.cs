@@ -34,14 +34,25 @@ namespace Lithnet.CredentialProvider
         /// <summary>
         /// Gets a value indicating the consent prompt type
         /// </summary>
-        public int PromptType => this.header.PromptType;
+        public ConsentUIPromptType PromptType => this.header.PromptType;
 
         /// <summary>
         /// Gets a handle to the Window that was responsible for invoking the ConsentUI prompt
         /// </summary>
-        public IntPtr HWnd => this.header.hWnd;
+        public IntPtr HWnd => this.header.hWindow;
 
-        public ElevationType ElevationType => this.header.elevationType;
+        /// <summary>
+        /// Gets the method that ConsentUI has been told to fetch approval.
+        /// In the case where a Credential Provider is initialised, this should always be `Credentials`.
+        /// </summary>
+        public ConsentUIElevationType ElevationType => this.header.ElevationType;
+
+        /// <summary>
+        /// A series of flags that AppInfo passes to ConsentUI to signifiy actions that need to
+        /// take place on the UI side.
+        /// This includes specifics around the UI that should be presented & signature verification settings.
+        /// </summary>
+        public ConsentUIFlags Flags => this.header.Flags;
 
         /// <summary>
         /// Gets the ID of the session where the ConsentUI prompt was originally invoked
