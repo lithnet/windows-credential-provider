@@ -9,6 +9,9 @@ namespace Lithnet.CredentialProvider
     /// </summary>
     public class ConsentUIDataExe : ConsentUIData
     {
+        /// <summary>
+        /// A file handle pointing to the EXE in question
+        /// </summary>
         private IntPtr hFile;
 
         /// <summary>

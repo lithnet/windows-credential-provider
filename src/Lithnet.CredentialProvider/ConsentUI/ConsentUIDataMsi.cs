@@ -10,6 +10,11 @@ namespace Lithnet.CredentialProvider
     public class ConsentUIDataMsi : ConsentUIData
     {
         /// <summary>
+        /// The action being performed, such as Install, Uninstall or Repair
+        /// </summary>
+        public ConsentUIMsiAction Action { get; set; }
+
+        /// <summary>
         /// The name of the product being installed
         /// </summary>
         public string ProductName { get; }
@@ -39,16 +44,6 @@ namespace Lithnet.CredentialProvider
         /// </summary>
         public string OriginalMsi { get; }
 
-        /// <summary>
-        /// A currently unknown parameter
-        /// </summary>
-        public string Unknown1 { get; }
-
-        /// <summary>
-        /// A currently unknown parameter
-        /// </summary>
-        public string Unknown2 { get; }
-
         internal ConsentUIDataMsi(IntPtr pData, int expectedSize) : base(pData, expectedSize)
         {
             if (this.header.Type != ConsentUIType.Msi)
@@ -58,14 +53,13 @@ namespace Lithnet.CredentialProvider
 
             var s = Marshal.PtrToStructure<ConsentUIStructureMsi>(pData);
 
+            this.Action = s.MsiAction;
             this.ProductName = this.GetStringValueIfValid(pData, (int)s.oProductName);
             this.Version = this.GetStringValueIfValid(pData, (int)s.oVersion);
             this.Locale = this.GetStringValueIfValid(pData, (int)s.oLocale);
             this.Publisher = this.GetStringValueIfValid(pData, (int)s.oPublisher);
-            this.ExecutionPath = this.GetStringValueIfValid(pData,   (int)s.oExecutionPath);
-            this.OriginalMsi = this.GetStringValueIfValid(pData,    (int)s.oOriginalMsi);
-            this.Unknown1 = this.GetStringValueIfValid(pData, (int)s.oUnknown1);
-            this.Unknown2 = this.GetStringValueIfValid(pData, (int)s.oUnknown2);
+            this.ExecutionPath = this.GetStringValueIfValid(pData, (int)s.oExecutionPath);
+            this.OriginalMsi = this.GetStringValueIfValid(pData, (int)s.oOriginalMsi);
         }
     }
 }
