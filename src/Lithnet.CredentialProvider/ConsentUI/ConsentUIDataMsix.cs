@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using Lithnet.CredentialProvider.Interop;
 
-namespace Lithnet.CredentialProvider.Interop
+namespace Lithnet.CredentialProvider
 {
     /// <summary>
     /// Represents the data structure passed to consent UI when a user is trying to elevate an MSIX package
