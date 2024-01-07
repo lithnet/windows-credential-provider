@@ -174,6 +174,16 @@ namespace Lithnet.CredentialProvider
         /// <param name="inboundSerialization">The inbound serialized credential </param>
         public virtual void OnSetSerialization(CredentialSerialization inboundSerialization) { }
 
+        /// <summary>
+        /// This method is first called when the credential provider is initialized. Override this method to perform any initialization tasks
+        /// </summary>
+        public virtual void OnLoad() { }
+
+        /// <summary>
+        /// The method is called when the credential provider is being unloaded. Override this method to perform any cleanup tasks
+        /// </summary>
+        public virtual void OnUnload() { }
+
         private void BuildControls()
         {
             if (this.Controls == null)

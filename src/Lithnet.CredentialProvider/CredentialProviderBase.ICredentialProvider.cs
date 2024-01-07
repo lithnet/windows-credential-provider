@@ -60,6 +60,8 @@ namespace Lithnet.CredentialProvider
                     Marshal.AddRef(intPtr);
                 }
 
+                this.OnLoad();
+
                 return HRESULT.S_OK;
             }
             catch (Exception ex)
@@ -82,6 +84,8 @@ namespace Lithnet.CredentialProvider
                     this.CredentialProviderEvents = null;
                     this.credentialProviderEventsAdviseContext = IntPtr.Zero;
                 }
+
+                this.OnUnload();
 
                 return HRESULT.S_OK;
             }
