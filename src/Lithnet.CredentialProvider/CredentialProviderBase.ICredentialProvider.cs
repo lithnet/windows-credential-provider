@@ -7,6 +7,8 @@ namespace Lithnet.CredentialProvider
 {
     public abstract partial class CredentialProviderBase : ICredentialProvider
     {
+        private const uint CREDENTIAL_PROVIDER_NO_DEFALT = 0xFFFFFFFF;
+
         int ICredentialProvider.SetUsageScenario(UsageScenario cpus, CredUIWinFlags dwFlags)
         {
             try
@@ -151,7 +153,7 @@ namespace Lithnet.CredentialProvider
         int ICredentialProvider.GetCredentialCount(out uint pdwCount, out uint pdwDefault, out int pbAutoLogonWithDefault)
         {
             pdwCount = 0;
-            pdwDefault = 0;
+            pdwDefault = CREDENTIAL_PROVIDER_NO_DEFALT;
             pbAutoLogonWithDefault = 0;
 
             try
@@ -170,18 +172,18 @@ namespace Lithnet.CredentialProvider
                 var autoLogonTile = this.Tiles.FirstOrDefault(t => t.IsAutoLogon);
                 var defaultTile = this.Tiles.FirstOrDefault(t => t.IsDefault);
 
-                int defaultIndex = 0;
+                uint defaultIndex = CREDENTIAL_PROVIDER_NO_DEFALT;
                 if (autoLogonTile != null)
                 {
-                    defaultIndex = this.tiles.IndexOf(autoLogonTile);
+                    defaultIndex = (uint)this.tiles.IndexOf(autoLogonTile);
                 }
                 else if (defaultTile != null)
                 {
-                    defaultIndex = this.tiles.IndexOf(defaultTile);
+                    defaultIndex = (uint)this.tiles.IndexOf(defaultTile);
                 }
 
                 pdwCount = (uint)this.Tiles.Count;
-                pdwDefault = (uint)defaultIndex;
+                pdwDefault = defaultIndex;
                 pbAutoLogonWithDefault = autoLogonTile == null ? 0 : 1;
 
                 this.logger.LogTrace($"GetCredentialCount returning pdwCount: {pdwCount}, pdwDefault: {pdwDefault}, pbAutoLogonWithDefault: {pbAutoLogonWithDefault}");
