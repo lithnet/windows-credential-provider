@@ -22,6 +22,8 @@ namespace Lithnet.CredentialProvider
                     Marshal.AddRef(intPtr);
                 }
 
+                this.OnLoad();
+
                 return HRESULT.S_OK;
             }
             catch (Exception ex)
@@ -44,6 +46,8 @@ namespace Lithnet.CredentialProvider
                     Marshal.Release(intPtr);
                     this.events = null;
                 }
+
+                this.OnUnload();
 
                 return HRESULT.S_OK;
             }

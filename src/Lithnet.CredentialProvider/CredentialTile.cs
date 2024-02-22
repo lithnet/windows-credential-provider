@@ -135,6 +135,17 @@ namespace Lithnet.CredentialProvider
             this.events2.EndFieldUpdates();
         }
 
+
+        /// <summary>
+        /// This method is called when the credential provider tile is initialized. Override this method to perform any initialization tasks
+        /// </summary>
+        public virtual void OnLoad() { }
+
+        /// <summary>
+        /// The method is called when the credential provider tile is being unloaded. Override this method to perform any cleanup tasks
+        /// </summary>
+        public virtual void OnUnload() { }
+
         /// <summary>
         /// Called after the tile has been initialized. Override this method to perform post-initialization actions.
         /// </summary>

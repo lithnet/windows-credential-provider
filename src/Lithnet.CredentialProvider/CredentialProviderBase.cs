@@ -52,6 +52,16 @@ namespace Lithnet.CredentialProvider
         public IReadOnlyList<CredentialTile> Tiles { get; private set; }
 
         /// <summary>
+        /// Gets a value that indicates if this credential provider is loaded by Logon UI
+        /// </summary>
+        public bool IsLogonUI => this.UsageScenario == UsageScenario.Logon;
+
+        /// <summary>
+        /// Gets a value that indicates if the credential provider is loaded by Consent UI (eg UAC prompt)
+        /// </summary>
+        public bool IsConsentUI => this.UsageScenario == UsageScenario.CredUI && ConsentUIData.IsConsentUIParent();
+
+        /// <summary>
         /// Provides access to the serialized input data provided by CredUI
         /// </summary>
         public CredentialSerialization InboundSerialization { get; private set; }
@@ -163,6 +173,16 @@ namespace Lithnet.CredentialProvider
         /// </summary>
         /// <param name="inboundSerialization">The inbound serialized credential </param>
         public virtual void OnSetSerialization(CredentialSerialization inboundSerialization) { }
+
+        /// <summary>
+        /// This method is first called when the credential provider is initialized. Override this method to perform any initialization tasks
+        /// </summary>
+        public virtual void OnLoad() { }
+
+        /// <summary>
+        /// The method is called when the credential provider is being unloaded. Override this method to perform any cleanup tasks
+        /// </summary>
+        public virtual void OnUnload() { }
 
         private void BuildControls()
         {

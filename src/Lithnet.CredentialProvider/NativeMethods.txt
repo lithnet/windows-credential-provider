@@ -1,0 +1,7 @@
+ReadProcessMemory
+OpenProcess
+WTSQueryUserToken 
+GetTokenInformation
+CloseHandle
+DuplicateHandle
+GetFileSizeEx
