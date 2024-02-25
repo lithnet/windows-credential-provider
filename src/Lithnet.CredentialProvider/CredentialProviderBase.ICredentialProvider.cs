@@ -153,7 +153,7 @@ namespace Lithnet.CredentialProvider
         int ICredentialProvider.GetCredentialCount(out uint pdwCount, out uint pdwDefault, out int pbAutoLogonWithDefault)
         {
             pdwCount = 0;
-            pdwDefault = CREDENTIAL_PROVIDER_NO_DEFALT;
+            pdwDefault = CREDENTIAL_PROVIDER_NO_DEFAULT;
             pbAutoLogonWithDefault = 0;
 
             try
@@ -172,7 +172,7 @@ namespace Lithnet.CredentialProvider
                 var autoLogonTile = this.Tiles.FirstOrDefault(t => t.IsAutoLogon);
                 var defaultTile = this.Tiles.FirstOrDefault(t => t.IsDefault);
 
-                uint defaultIndex = CREDENTIAL_PROVIDER_NO_DEFALT;
+                uint defaultIndex = CREDENTIAL_PROVIDER_NO_DEFAULT;
                 if (autoLogonTile != null)
                 {
                     defaultIndex = (uint)this.tiles.IndexOf(autoLogonTile);
