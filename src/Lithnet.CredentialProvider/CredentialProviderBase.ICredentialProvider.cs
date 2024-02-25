@@ -7,7 +7,7 @@ namespace Lithnet.CredentialProvider
 {
     public abstract partial class CredentialProviderBase : ICredentialProvider
     {
-        private const uint CREDENTIAL_PROVIDER_NO_DEFALT = 0xFFFFFFFF;
+        private const uint CREDENTIAL_PROVIDER_NO_DEFAULT = 0xFFFFFFFF;
 
         int ICredentialProvider.SetUsageScenario(UsageScenario cpus, CredUIWinFlags dwFlags)
         {
