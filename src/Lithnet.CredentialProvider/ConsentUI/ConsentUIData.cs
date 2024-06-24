@@ -77,8 +77,18 @@ namespace Lithnet.CredentialProvider
         /// <exception cref="Win32Exception">Thrown when the user's token could not be obtained from the session information</exception>
         public WindowsIdentity GetWindowsIdentity()
         {
-            var duplicatedToken = DuplicateHandleInternal(this.header.hToken);
+            var duplicatedToken = DuplicateHandleFromInternal(this.header.hToken);
             return new WindowsIdentity(duplicatedToken.DangerousGetHandle());
+        }
+
+        /// <summary>
+        /// Write a token handle back to AppInfo, simulating ConsentUI's behaviour
+        /// </summary>
+        /// <param name="hToken">A SafeAccessTokenHandle to an administrative token</param>
+        /// <exception cref="Win32Exception">Thrown when the user's token could not be obtained from the session information</exception>
+        public void WriteTokenHandle(SafeAccessTokenHandle hToken)
+        {
+            DuplicateTokenHandleToInternal(hToken, this.header.pReturnAddress);
         }
 
         /// <summary>
@@ -139,7 +149,7 @@ namespace Lithnet.CredentialProvider
         public static ConsentUIData GetConsentUIData()
         {
             var pData = GetConsentUIData(out int structSize);
-            return ConsentUIData.CreateInstance(pData.ToIntPtr(), structSize);
+            return CreateInstance(pData.ToIntPtr(), structSize);
         }
 
         /// <summary>
@@ -276,25 +286,6 @@ namespace Lithnet.CredentialProvider
         }
 
         /// <summary>
-        /// Opens a native handle to a process
-        /// </summary>
-        /// <param name="processId">The ID of the process</param>
-        /// <param name="rights">The requested access rights</param>
-        /// <returns>A safe handle to the process</returns>
-        /// <exception cref="Win32Exception">Thrown when the process handle could not be obtained</exception>
-        private static SafeFileHandle OpenProcessHandle(uint processId, PROCESS_ACCESS_RIGHTS rights)
-        {
-            var hProcess = NativeMethods.OpenProcess_SafeHandle(rights, false, processId);
-            if (hProcess.IsInvalid)
-            {
-                int error = Marshal.GetLastWin32Error();
-                throw new Win32Exception(error, $"Unable to open process {processId}");
-            }
-
-            return hProcess;
-        }
-
-        /// <summary>
         /// Creates an instance of the appropriate subclass of ConsentUIData by reading the type from the data structure
         /// </summary>
         /// <param name="pData">A pointer to the data structure</param>
@@ -330,19 +321,124 @@ namespace Lithnet.CredentialProvider
         /// <param name="handle">The handle to duplicate</param>
         /// <returns>A duplicated reference to the handle</returns>
         /// <exception cref="Win32Exception">Thrown when the handle could not be duplicated</exception>
-        protected private static SafeHandle DuplicateHandleInternal(IntPtr handle)
+        protected private static SafeHandle DuplicateHandleFromInternal(IntPtr handle)
         {
-            commandLineArgs ??= GetConsentUICommandLineArgs();
-
-            var processHandle = OpenProcessHandle(commandLineArgs.AppInfoProcessId, PROCESS_ACCESS_RIGHTS.PROCESS_DUP_HANDLE);
+            var processHandle = GetAppInfoHandleInternal(PROCESS_ACCESS_RIGHTS.PROCESS_DUP_HANDLE);
             SafeFileHandle t = new(handle, false);
 
             if (!NativeMethods.DuplicateHandle(processHandle, t, Process.GetCurrentProcess().SafeHandle, out var duplicatedToken, 0, false, DUPLICATE_HANDLE_OPTIONS.DUPLICATE_SAME_ACCESS))
             {
-                throw new Win32Exception(Marshal.GetLastWin32Error(), "Unable to duplicate the handle");
+                throw new Win32Exception(Marshal.GetLastWin32Error(), "Unable to duplicate the token handle");
             }
 
             return duplicatedToken;
+        }
+
+        /// <summary>
+        /// Duplicates a token handle from the current process to the AppInfo service
+        /// </summary>
+        /// <param name="handle">A SafeAccessTokenHandle to duplicate</param>
+        /// <exception cref="Win32Exception">Thrown when the handle could not be duplicated, or the return address could not be written to</exception>
+        /// <exception cref="InvalidDataException">Thrown when the size of the expected data structure does not match the size reported in the structure itself</exception>
+        protected private static void DuplicateTokenHandleToInternal(SafeAccessTokenHandle handle, IntPtr returnAddress)
+        {
+            commandLineArgs ??= GetConsentUICommandLineArgs();
+
+            var hProcessSrc = Process.GetCurrentProcess().SafeHandle;
+            var hProcessDest = GetAppInfoHandleInternal(
+                PROCESS_ACCESS_RIGHTS.PROCESS_DUP_HANDLE |
+                PROCESS_ACCESS_RIGHTS.PROCESS_VM_WRITE |
+                PROCESS_ACCESS_RIGHTS.PROCESS_VM_OPERATION
+            );
+
+            // Duplicate the AccessTokenHandle from the current process to AppInfo
+            if(!NativeMethods.DuplicateHandle(hProcessSrc, handle, hProcessDest, out var duplicatedToken, 0, false, DUPLICATE_HANDLE_OPTIONS.DUPLICATE_SAME_ACCESS))
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error(), "Unable to duplicate the token handle");
+            }
+
+            // Get a pointer to the handle we just duplicated
+            IntPtr pDestinationHandle = duplicatedToken.DangerousGetHandle();
+
+            // Convert the IntPtr of the handle in AppInfo to a byte array to write back to the return address
+            byte[] buffer = PointerToArray(pDestinationHandle);
+            int size = buffer.Length;
+            SafeHGlobalHandle pData = SafeHGlobalHandle.AllocHGlobal(size);
+            Marshal.Copy(buffer, 0, pData.ToIntPtr(), size);
+
+            // Write pDestinationHandle back to AppInfo
+            unsafe
+            {
+                nuint numberOfBytesWritten = 0;
+
+                if (!NativeMethods.WriteProcessMemory(hProcessDest, returnAddress.ToPointer(), pData.ToIntPtr().ToPointer(), (nuint)size, &numberOfBytesWritten))
+                {
+                    int error = Marshal.GetLastWin32Error();
+                    throw new Win32Exception(error, $"Unable to write memory to process");
+                }
+
+                if (numberOfBytesWritten != (nuint)size)
+                {
+                    throw new InvalidDataException($"Bytes written to memory {numberOfBytesWritten} was not the expected structure size {size}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Opens a SafeFileHandle to the AppInfo process that initalized ConsentUI
+        /// </summary>
+        /// <param name="rights">The access rights to open the process with</param>
+        /// <returns>A safe handle to the AppInfo process</returns>
+        /// <exception cref="Win32Exception">Thrown when the process handle could not be obtained</exception>
+        protected private static SafeFileHandle GetAppInfoHandleInternal(PROCESS_ACCESS_RIGHTS rights)
+        {
+            commandLineArgs ??= GetConsentUICommandLineArgs();
+
+            var processHandle = OpenProcessHandle(
+                commandLineArgs.AppInfoProcessId,
+                rights
+            );
+
+            return processHandle;
+        }
+
+        /// <summary>
+        /// Opens a native handle to a process
+        /// </summary>
+        /// <param name="processId">The ID of the process</param>
+        /// <param name="rights">The requested access rights</param>
+        /// <returns>A safe handle to the process</returns>
+        /// <exception cref="Win32Exception">Thrown when the process handle could not be obtained</exception>
+        private static SafeFileHandle OpenProcessHandle(uint processId, PROCESS_ACCESS_RIGHTS rights)
+        {
+            var hProcess = NativeMethods.OpenProcess_SafeHandle(rights, false, processId);
+            if (hProcess.IsInvalid)
+            {
+                int error = Marshal.GetLastWin32Error();
+                throw new Win32Exception(error, $"Unable to open process {processId}");
+            }
+
+            return hProcess;
+        }
+
+        /// <summary>
+        /// Convert an IntPtr to an array of bytes
+        /// </summary>
+        /// <param name="pointer">An IntPtr object</param>
+        /// <returns>A byte[] representation of the pointer</returns>
+        private static byte[] PointerToArray(IntPtr pointer)
+        {
+            unsafe
+            {
+                if (sizeof(IntPtr) == 4)
+                {
+                    return BitConverter.GetBytes((int)pointer);
+                }
+                else
+                {
+                    return BitConverter.GetBytes((long)pointer);
+                }
+            }
         }
     }
 }

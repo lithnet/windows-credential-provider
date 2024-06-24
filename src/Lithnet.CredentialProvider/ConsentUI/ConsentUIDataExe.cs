@@ -40,7 +40,7 @@ namespace Lithnet.CredentialProvider
         /// <returns>A handle to the executable</returns>
         public SafeHandle GetExecutableHandle()
         {
-            return DuplicateHandleInternal(this.hFile);
+            return DuplicateHandleFromInternal(this.hFile);
         }
 
         internal ConsentUIDataExe(IntPtr pData, int expectedSize) : base(pData, expectedSize)

@@ -1,4 +1,5 @@
 ReadProcessMemory
+WriteProcessMemory
 OpenProcess
 WTSQueryUserToken 
 GetTokenInformation
