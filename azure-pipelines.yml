@@ -158,29 +158,29 @@ stages:
           publishLocation: 'pipeline'
           artifact: cp
 
-- stage: publish_nuget
-  displayName: Publish CredProvider to nuget.org
-  dependsOn: "build_provider"
-  jobs:
-      - deployment: 'PublishPackages'
-        environment: 'Public nuget feed'
-        displayName: Publish packages to public nuget feed 
-        pool:
-          vmImage: windows-2022 
-        strategy:
-          runOnce:
-            deploy:            
-              steps:
-              - checkout: none
-              - download: current
-                artifact: cp
-              - task: NuGetToolInstaller@1
-                inputs:
-                  versionSpec: '>=4.9.0-0'
-              - task: NuGetCommand@2
-                displayName: 'Publish nuget package to public feed'
-                inputs:
-                  command: 'push'
-                  packagesToPush: '$(Pipeline.Workspace)/cp/*.nupkg'
-                  nuGetFeedType: 'external'
-                  publishFeedCredentials: 'WindowsCredentialProviderNuget'
+# - stage: publish_nuget
+#   displayName: Publish CredProvider to nuget.org
+#   dependsOn: "build_provider"
+#   jobs:
+#       - deployment: 'PublishPackages'
+#         environment: 'Public nuget feed'
+#         displayName: Publish packages to public nuget feed 
+#         pool:
+#           vmImage: windows-2022 
+#         strategy:
+#           runOnce:
+#             deploy:            
+#               steps:
+#               - checkout: none
+#               - download: current
+#                 artifact: cp
+#               - task: NuGetToolInstaller@1
+#                 inputs:
+#                   versionSpec: '>=4.9.0-0'
+#               - task: NuGetCommand@2
+#                 displayName: 'Publish nuget package to public feed'
+#                 inputs:
+#                   command: 'push'
+#                   packagesToPush: '$(Pipeline.Workspace)/cp/*.nupkg'
+#                   nuGetFeedType: 'external'
+#                   publishFeedCredentials: 'WindowsCredentialProviderNuget'
