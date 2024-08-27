@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace Lithnet.CredentialProvider.Interop
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    internal struct ConsentUIStructureHeader
+    internal struct ConsentUIStructureHeaderBase
     {
         public int Size; // 4
         public ConsentUIType Type; // 4
@@ -26,8 +26,5 @@ namespace Lithnet.CredentialProvider.Interop
 
         public ConsentUIFlags Flags; // 4
         public int unknown0; // 4 
-        public IntPtr pReturnAddress; // 8
-
-        // 64
     }
 }

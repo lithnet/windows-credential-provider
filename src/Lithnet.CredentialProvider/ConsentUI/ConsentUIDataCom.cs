@@ -41,7 +41,7 @@ namespace Lithnet.CredentialProvider
                 throw new InvalidOperationException("The data structure is not of type COM");
             }
 
-            var s = Marshal.PtrToStructure<ConsentUIStructureCom>(pData);
+            var s = Marshal.PtrToStructure<ConsentUIStructureCom>(pData + HeaderSize);
 
             this.ComComponentPath = this.GetStringValueIfValid(pData, (int)s.oComComponentPath);
             this.ImageResourcePath = this.GetStringValueIfValid(pData, (int)s.oImageResourcePath);

@@ -6,8 +6,6 @@ namespace Lithnet.CredentialProvider.Interop
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal struct ConsentUIStructureMsi
     {
-        public ConsentUIStructureHeader Header;
-
         // 64 
 
         public ConsentUIMsiAction MsiAction; // 8 

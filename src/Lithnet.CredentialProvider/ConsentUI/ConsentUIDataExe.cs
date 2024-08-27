@@ -50,7 +50,7 @@ namespace Lithnet.CredentialProvider
                 throw new InvalidOperationException("The data structure is not of type EXE");
             }
 
-            var s = Marshal.PtrToStructure<ConsentUIStructureExe>(pData);
+            var s = Marshal.PtrToStructure<ConsentUIStructureExe>(pData + HeaderSize);
 
             this.hFile = s.hFile;
             this.ExecutablePath = this.GetStringValueIfValid(pData, (int)s.oExecutablePath1);

@@ -23,8 +23,12 @@ namespace Lithnet.CredentialProvider
     {
         private static bool? isConsentUI;
         private static ConsentUICommandLineArgs commandLineArgs;
-        private protected ConsentUIStructureHeader header;
+        private protected ConsentUIStructureHeaderBase header;
         private readonly byte[] rawData;
+        private static readonly Version v2HeaderOsVersion = new Version(10, 0, 26100, 0);
+        internal static int v2HeaderSize = Marshal.SizeOf<ConsentUIStructureHeaderV2>();
+        internal static int v1HeaderSize = Marshal.SizeOf<ConsentUIStructureHeaderV1>();
+        internal static int HeaderSize { get; set; } = Environment.OSVersion.Version >= v2HeaderOsVersion ? v2HeaderSize : v1HeaderSize;
 
         /// <summary>
         /// Gets a value indicating the type of ConsentUI data structure
@@ -62,7 +66,8 @@ namespace Lithnet.CredentialProvider
         private protected ConsentUIData(IntPtr pData, int expectedSize)
         {
             this.rawData = GetRawBytes(pData, expectedSize);
-            this.header = Marshal.PtrToStructure<ConsentUIStructureHeader>(pData);
+
+            this.header = Marshal.PtrToStructure<ConsentUIStructureHeaderBase>(pData);
 
             if (this.header.Size != expectedSize)
             {
@@ -330,7 +335,7 @@ namespace Lithnet.CredentialProvider
         /// <param name="handle">The handle to duplicate</param>
         /// <returns>A duplicated reference to the handle</returns>
         /// <exception cref="Win32Exception">Thrown when the handle could not be duplicated</exception>
-        protected private static SafeHandle DuplicateHandleInternal(IntPtr handle)
+        private protected static SafeHandle DuplicateHandleInternal(IntPtr handle)
         {
             commandLineArgs ??= GetConsentUICommandLineArgs();
 
