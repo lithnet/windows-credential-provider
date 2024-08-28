@@ -73,6 +73,11 @@ namespace Lithnet.CredentialProvider
             {
                 throw new InvalidDataException($"The size of the data structure {this.header.Size} does not match the expected size {expectedSize}");
             }
+
+            if (HeaderSize > this.header.Size)
+            {
+                throw new InvalidDataException($"The size of the data structure {this.header.Size} is less than the expected header size {HeaderSize}");
+            }
         }
 
         /// <summary>
