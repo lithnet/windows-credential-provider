@@ -102,7 +102,7 @@ public override bool ShouldIncludeGenericTile()
     return true;
 }
 
-public override CredentialTile1 CreateGenericTile()
+public override CredentialTile CreateGenericTile()
 {
     return new MyTile(this);
 }
