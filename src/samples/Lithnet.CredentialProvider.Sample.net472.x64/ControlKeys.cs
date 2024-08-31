@@ -13,7 +13,7 @@
         internal const string Checkbox = "Checkbox";
         internal const string LabelCheckboxValue = "LabelCheckbox";
         internal const string CommandLinkCheckboxValue = "CommandLinkCheckbox";
-        internal const string ImageUserTile = "UerTileImage";
+        internal const string ImageUserTile = "UserTileImage";
         internal const string Combobox = "Combobox";
         internal const string LabelComboboxSelectedItem = "ComboSelectedItemLabel";
         internal const string CommandLinkComboboxAdd = "CommandLinkComboboxAdd";
