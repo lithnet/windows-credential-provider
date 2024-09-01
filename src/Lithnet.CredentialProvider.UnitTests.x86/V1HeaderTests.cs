@@ -23,7 +23,7 @@ namespace Lithnet.CredentialProvider.UnitTests
             Assert.AreEqual(ConsentUIFlags.InWindowsDirectory | ConsentUIFlags.SecureDesktop | ConsentUIFlags.Unknown3, d.Flags);
             Assert.AreEqual(2, d.SessionId);
             Assert.AreEqual((IntPtr)0x0006056a, d.HWnd);
-            Assert.AreEqual((ConsentUIElevationType)6, d.ElevationType);
+            Assert.AreEqual(ConsentUIElevationReason.Request, d.ElevationReason);
             Assert.AreEqual(ConsentUIPromptType.Credentials, d.PromptType);
             Assert.AreEqual("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", d.ExecutablePath);
             Assert.AreEqual("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", d.Unknown1);
@@ -42,7 +42,7 @@ namespace Lithnet.CredentialProvider.UnitTests
             Assert.AreEqual(ConsentUIFlags.InWindowsDirectory | ConsentUIFlags.SecureDesktop | ConsentUIFlags.AutoElevationOther, d.Flags);
             Assert.AreEqual(2, d.SessionId);
             Assert.AreEqual((IntPtr)0x000705bc, d.HWnd);
-            Assert.AreEqual((ConsentUIElevationType)5, d.ElevationType);
+            Assert.AreEqual(ConsentUIElevationReason.Msi, d.ElevationReason);
             Assert.AreEqual(ConsentUIPromptType.Credentials, d.PromptType);
             Assert.AreEqual("7-Zip 23.01", d.ProductName);
             Assert.AreEqual(ConsentUIMsiAction.Install, d.Action);
@@ -65,7 +65,7 @@ namespace Lithnet.CredentialProvider.UnitTests
             Assert.AreEqual( ConsentUIFlags.SecureDesktop | ConsentUIFlags.Unknown3, d.Flags);
             Assert.AreEqual(2, d.SessionId);
             Assert.AreEqual((IntPtr)0x0, d.HWnd);
-            Assert.AreEqual((ConsentUIElevationType)8, d.ElevationType);
+            Assert.AreEqual(ConsentUIElevationReason.PackagedApp, d.ElevationReason);
             Assert.AreEqual(ConsentUIPromptType.Credentials, d.PromptType);
             Assert.AreEqual("\"C:\\Program Files\\WindowsApps\\Microsoft.MSIXPackagingTool_1.2023.807.0_x86__8wekyb3d8bbwe\\MsixPackageTool.exe\" ", d.CommandLine);
             Assert.AreEqual("C:\\Program Files\\WindowsApps\\Microsoft.MSIXPackagingTool_1.2023.807.0_x86__8wekyb3d8bbwe\\MsixPackageTool.exe", d.ExecutablePath);
@@ -84,7 +84,7 @@ namespace Lithnet.CredentialProvider.UnitTests
             Assert.AreEqual(ConsentUIFlags.SecureDesktop | ConsentUIFlags.AutoElevationOther | ConsentUIFlags.InWindowsDirectory, d.Flags);
             Assert.AreEqual(2, d.SessionId);
             Assert.AreEqual((IntPtr)0x000b0586, d.HWnd);
-            Assert.AreEqual((ConsentUIElevationType)4, d.ElevationType);
+            Assert.AreEqual(ConsentUIElevationReason.CLSID, d.ElevationReason);
             Assert.AreEqual(ConsentUIPromptType.Credentials, d.PromptType);
             Assert.AreEqual(new Guid("{3ad05575-8857-4850-9277-11b85bdb8e09}"), d.ClsId);
             Assert.AreEqual("C:\\Windows\\system32\\windows.storage.dll", d.ComComponentPath);

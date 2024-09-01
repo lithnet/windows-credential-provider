@@ -62,7 +62,7 @@ namespace Lithnet.CredentialProvider
         BlockElevation = 0x1000,
 
         /// <summary>
-        /// Corresponds to `ConsentUIElevationType.AutomaticAdmin`
+        /// Corresponds to `ConsentUIPromptType.AutomaticAdmin`
         /// This seems to be an instance where UAC creates a local, secondary
         /// account called '%username%_admin' which is used to elevate a process.
         /// </summary>
