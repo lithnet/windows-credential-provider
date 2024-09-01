@@ -18,7 +18,7 @@ namespace Lithnet.CredentialProvider.Interop
 
         // 32
 
-        public ConsentUIElevationType ElevationType; // 4
+        public ConsentUIElevationReason ElevationReason; // 4
         public int sessionId; // 4
         public IntPtr hMutex; // 8
 

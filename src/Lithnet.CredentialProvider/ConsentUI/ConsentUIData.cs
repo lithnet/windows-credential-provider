@@ -36,7 +36,8 @@ namespace Lithnet.CredentialProvider
         public ConsentUIType Type => this.header.Type;
 
         /// <summary>
-        /// Gets a value indicating the consent prompt type
+        /// Gets a value indicating how UAC has been told to fetch approval.
+        /// In the case where a Credential Provider is initialised, this should always be `Credentials`.
         /// </summary>
         public ConsentUIPromptType PromptType => this.header.PromptType;
 
@@ -46,13 +47,13 @@ namespace Lithnet.CredentialProvider
         public IntPtr HWnd => this.header.hWindow;
 
         /// <summary>
-        /// Gets the method that ConsentUI has been told to fetch approval.
-        /// In the case where a Credential Provider is initialised, this should always be `Credentials`.
+        /// Gets the reason why `consent.exe` was started in the first place. In other words,
+        /// the type of action that led to an elevation request.
         /// </summary>
-        public ConsentUIElevationType ElevationType => this.header.ElevationType;
+        public ConsentUIElevationReason ElevationReason => this.header.ElevationReason;
 
         /// <summary>
-        /// A series of flags that AppInfo passes to ConsentUI to signifiy actions that need to
+        /// A series of flags that AppInfo passes to ConsentUI to signify actions that need to
         /// take place on the UI side.
         /// This includes specifics around the UI that should be presented & signature verification settings.
         /// </summary>
