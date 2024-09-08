@@ -36,7 +36,7 @@ namespace Lithnet.CredentialProvider
                 throw new InvalidOperationException("The data structure is not of type MSIX");
             }
 
-            var s = Marshal.PtrToStructure<ConsentUIStructureMsix>(pData);
+            var s = Marshal.PtrToStructure<ConsentUIStructureMsix>(pData + HeaderSize);
 
             this.ExecutablePath = this.GetStringValueIfValid(pData, (int)s.oExecutablePath);
             this.PackageName = this.GetStringValueIfValid(pData, (int)s.oPackageName);

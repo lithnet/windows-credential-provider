@@ -51,7 +51,7 @@ namespace Lithnet.CredentialProvider
                 throw new InvalidOperationException("The data structure is not of type MSI");
             }
 
-            var s = Marshal.PtrToStructure<ConsentUIStructureMsi>(pData);
+            var s = Marshal.PtrToStructure<ConsentUIStructureMsi>(pData + HeaderSize);
 
             this.Action = s.MsiAction;
             this.ProductName = this.GetStringValueIfValid(pData, (int)s.oProductName);

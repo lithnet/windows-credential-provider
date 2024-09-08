@@ -6,8 +6,6 @@ namespace Lithnet.CredentialProvider.Interop
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal struct ConsentUIStructureCom
     {
-        public ConsentUIStructureHeader Header;
-
         // 64 
 
         public IntPtr oOperationType; // 8 

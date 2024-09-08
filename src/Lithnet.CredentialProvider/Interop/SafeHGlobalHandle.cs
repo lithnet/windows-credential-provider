@@ -10,6 +10,8 @@ namespace Lithnet.CredentialProvider.Interop
         /// </summary>
         IntPtr pointer;
 
+        int size;
+
         SafeHGlobalHandle()
         {
             this.pointer = IntPtr.Zero;
@@ -24,6 +26,8 @@ namespace Lithnet.CredentialProvider.Interop
         {
             this.Dispose();
         }
+
+        public int Size => size;
 
         public static SafeHGlobalHandle InvalidHandle => new SafeHGlobalHandle(IntPtr.Zero);
 
@@ -58,6 +62,7 @@ namespace Lithnet.CredentialProvider.Interop
 
             SafeHGlobalHandle result = new SafeHGlobalHandle();
             result.pointer = Marshal.AllocHGlobal(cb);
+            result.size = cb;
             return result;
         }
     }
