@@ -270,7 +270,7 @@ namespace Lithnet.CredentialProvider
             this.Tiles = this.tiles.AsReadOnly();
         }
 
-        private void NotifyHostOfTileCollectionChange()
+        public void NotifyHostOfTileCollectionChange()
         {
             if (this.notifyOnTileCollectionChange)
             {
