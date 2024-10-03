@@ -158,6 +158,31 @@ stages:
           publishLocation: 'pipeline'
           artifact: cp
 
+      - task: GitHubRelease@1
+        inputs:
+            gitHubConnection: github.com_lithnet # string. Required. GitHub connection (OAuth or PAT). 
+            repositoryName: '$(Build.Repository.Name)' # string. Required. Repository. Default: $(Build.Repository.Name).
+            action: 'create' # 'create' | 'edit' | 'delete'. Required. Action. Default: create.
+            #target: '$(Build.SourceVersion)' # string. Required when action = create || action = edit. Target. Default: $(Build.SourceVersion).
+            tagSource: 'userSpecifiedTag' # 'gitTag' | 'userSpecifiedTag'. Required when action = create. Tag source. Default: gitTag.
+            #tagPattern: # string. Optional. Use when tagSource = gitTag. Tag Pattern. 
+            tag:  v$(build.version) # string. Required when action = edit || action = delete || tagSource = userSpecifiedTag. Tag. 
+            title: v$(build.version) # string. Optional. Use when action = create || action = edit. Release title. 
+            #releaseNotesSource: 'filePath' # 'filePath' | 'inline'. Optional. Use when action = create || action = edit. Release notes source. Default: filePath.
+            #releaseNotesFilePath: # string. Optional. Use when releaseNotesSource = filePath. Release notes file path. 
+            #releaseNotesInline: # string. Optional. Use when releaseNotesSource = inline. Release notes. 
+            assets: | # string. Optional. Use when action = create || action = edit. Assets. Default: $(Build.ArtifactStagingDirectory)/*.
+                $(Build.ArtifactStagingDirectory)/cp/*.nupkg
+            #assetUploadMode: 'delete' # 'delete' | 'replace'. Optional. Use when action = edit. Asset upload mode. Default: delete.
+            #isDraft: false # boolean. Optional. Use when action = create || action = edit. Draft release. Default: false.
+            isPreRelease: true # boolean. Optional. Use when action = create || action = edit. Pre-release. Default: false.
+            addChangeLog: true # boolean. Optional. Use when action = create || action = edit. Add changelog. Default: true.
+            # Changelog configuration
+            changeLogCompareToRelease: 'lastFullRelease' # 'lastFullRelease' | 'lastNonDraftRelease' | 'lastNonDraftReleaseByTag'. Required when addChangeLog = true. Compare to. Default: lastFullRelease.
+            #changeLogCompareToReleaseTag: # string. Required when changeLogCompareToRelease = lastNonDraftReleaseByTag && addChangeLog = true. Release Tag. 
+            changeLogType: 'commitBased' # 'commitBased' | 'issueBased'. Required when addChangeLog = true. Changelog type. Default: commitBased.
+            #changeLogLabels: '[{ "label" : "bug", "displayName" : "Bugs", "state" : "closed" }]' # string. Optional. Use when changeLogType = issueBased && addChangeLog = true. Categories. Default: [{ "label" : "bug", "displayName" : "Bugs", "state" : "closed" }].   
+
 - stage: publish_nuget
   displayName: Publish CredProvider to nuget.org
   dependsOn: "build_provider"
@@ -188,23 +213,10 @@ stages:
                 inputs:
                     gitHubConnection: github.com_lithnet # string. Required. GitHub connection (OAuth or PAT). 
                     repositoryName: '$(Build.Repository.Name)' # string. Required. Repository. Default: $(Build.Repository.Name).
-                    action: 'create' # 'create' | 'edit' | 'delete'. Required. Action. Default: create.
-                    #target: '$(Build.SourceVersion)' # string. Required when action = create || action = edit. Target. Default: $(Build.SourceVersion).
+                    action: 'edit' # 'create' | 'edit' | 'delete'. Required. Action. Default: create.
+                    target: '$(Build.SourceVersion)' # string. Required when action = create || action = edit. Target. Default: $(Build.SourceVersion).
                     tagSource: 'userSpecifiedTag' # 'gitTag' | 'userSpecifiedTag'. Required when action = create. Tag source. Default: gitTag.
                     #tagPattern: # string. Optional. Use when tagSource = gitTag. Tag Pattern. 
                     tag:  v$(build.version) # string. Required when action = edit || action = delete || tagSource = userSpecifiedTag. Tag. 
-                    title: v$(build.version) # string. Optional. Use when action = create || action = edit. Release title. 
-                    #releaseNotesSource: 'filePath' # 'filePath' | 'inline'. Optional. Use when action = create || action = edit. Release notes source. Default: filePath.
-                    #releaseNotesFilePath: # string. Optional. Use when releaseNotesSource = filePath. Release notes file path. 
-                    #releaseNotesInline: # string. Optional. Use when releaseNotesSource = inline. Release notes. 
-                    assets: | # string. Optional. Use when action = create || action = edit. Assets. Default: $(Build.ArtifactStagingDirectory)/*.
-                      $(Pipeline.Workspace)/cp/*.nupkg
-                    #assetUploadMode: 'delete' # 'delete' | 'replace'. Optional. Use when action = edit. Asset upload mode. Default: delete.
-                    #isDraft: false # boolean. Optional. Use when action = create || action = edit. Draft release. Default: false.
-                    isPreRelease: true # boolean. Optional. Use when action = create || action = edit. Pre-release. Default: false.
-                    addChangeLog: true # boolean. Optional. Use when action = create || action = edit. Add changelog. Default: true.
-                  # Changelog configuration
-                    changeLogCompareToRelease: 'lastFullRelease' # 'lastFullRelease' | 'lastNonDraftRelease' | 'lastNonDraftReleaseByTag'. Required when addChangeLog = true. Compare to. Default: lastFullRelease.
-                    #changeLogCompareToReleaseTag: # string. Required when changeLogCompareToRelease = lastNonDraftReleaseByTag && addChangeLog = true. Release Tag. 
-                    changeLogType: 'commitBased' # 'commitBased' | 'issueBased'. Required when addChangeLog = true. Changelog type. Default: commitBased.
-                    #changeLogLabels: '[{ "label" : "bug", "displayName" : "Bugs", "state" : "closed" }]' # string. Optional. Use when changeLogType = issueBased && addChangeLog = true. Categories. Default: [{ "label" : "bug", "displayName" : "Bugs", "state" : "closed" }].   
+                    isPreRelease: false # boolean. Optional. Use when action = create || action = edit. Pre-release. Default: false.
+                    addChangeLog: false # boolean. Optional. Use when action = create || action = edit. Add changelog. Default: true.
