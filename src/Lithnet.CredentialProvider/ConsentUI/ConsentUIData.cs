@@ -42,7 +42,7 @@ namespace Lithnet.CredentialProvider
         public ConsentUIPromptType PromptType => this.header.PromptType;
 
         /// <summary>
-        /// Gets a handle to the Window that was responsible for invoking the ConsentUI prompt
+        /// Gets a handle to the window that was responsible for invoking the ConsentUI prompt
         /// </summary>
         public IntPtr HWnd => this.header.hWindow;
 
@@ -79,6 +79,11 @@ namespace Lithnet.CredentialProvider
             {
                 throw new InvalidDataException($"The size of the data structure {this.header.Size} is less than the expected header size {HeaderSize}");
             }
+        }
+
+        public SafeHandle GetConsentMutex()
+        {
+            return DuplicateHandleInternal(this.header.hMutex);
         }
 
         /// <summary>
