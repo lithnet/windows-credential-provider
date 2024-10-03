@@ -22,6 +22,7 @@ namespace Lithnet.CredentialProvider
     public abstract class ConsentUIData
     {
         private static bool? isConsentUI;
+        private static ConsentUIData cachedInstance;
         private static ConsentUICommandLineArgs commandLineArgs;
         private protected ConsentUIStructureHeaderBase header;
         private readonly byte[] rawData;
@@ -154,8 +155,23 @@ namespace Lithnet.CredentialProvider
         /// <returns>A ConsentUIData object</returns>
         public static ConsentUIData GetConsentUIData()
         {
-            var pData = GetConsentUIData(out int structSize);
-            return ConsentUIData.CreateInstance(pData.ToIntPtr(), structSize);
+            return GetConsentUIData(false);
+        }
+
+        /// <summary>
+        /// Gets the data structure passed to the Consent UI process
+        /// </summary>
+        /// <param name="forceRefresh">Forces the data structure to be re-read from the process</param>
+        /// <returns>A ConsentUIData object</returns>
+        public static ConsentUIData GetConsentUIData(bool forceRefresh)
+        {
+            if (cachedInstance == null || forceRefresh)
+            {
+                var pData = GetConsentUIData(out int structSize);
+                cachedInstance = ConsentUIData.CreateInstance(pData.ToIntPtr(), structSize);
+            }
+
+            return cachedInstance;
         }
 
         /// <summary>
