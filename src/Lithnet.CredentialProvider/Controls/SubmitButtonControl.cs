@@ -7,6 +7,8 @@ namespace Lithnet.CredentialProvider
     /// </summary>
     public class SubmitButtonControl : ControlBase
     {
+        private ControlBase adjacentToControl;
+
         /// <summary>
         /// Creates a new <c ref="SubmitButtonControl"/> control
         /// </summary>
@@ -22,24 +24,40 @@ namespace Lithnet.CredentialProvider
         /// <param name="adjacentToControl">The control that the submit button should appear adjacent to</param>
         public SubmitButtonControl(string key, string label, ControlBase adjacentToControl) : base(key, label, FieldType.Submit)
         {
-            this.AdjacentToId = adjacentToControl.Id;
-            this.AdjacentToKey = adjacentToControl.Key;
             this.State = FieldState.DisplayInSelectedTile;
+            this.adjacentToControl = adjacentToControl;
+        }
+
+        /// <summary>
+        /// Gets or sets the control that the button is adjacent to
+        /// </summary>
+        public ControlBase AdjacentToControl
+        {
+            get
+            {
+                return this.adjacentToControl;
+            }
+            set
+            {
+                this.adjacentToControl = value;
+                this.Events?.SetFieldSubmitButton(this.Credential, this.Id, this.adjacentToControl.Id);
+                this.RaisePropertyChanged();
+            }
         }
 
         /// <summary>
         /// Gets the unique ID of the control that the button is adjacent to
         /// </summary>
-        public string AdjacentToKey { get; }
+        public string AdjacentToKey => this.adjacentToControl?.Key;
 
-        internal uint AdjacentToId { get; private set; }
+        internal uint AdjacentToId => this.adjacentToControl.Id;
 
         private SubmitButtonControl(SubmitButtonControl source) : base(source) { }
 
         internal override ControlBase Clone()
         {
             var clone = new SubmitButtonControl(this);
-            clone.AdjacentToId = this.AdjacentToId;
+            clone.adjacentToControl = this.adjacentToControl;
 
             return clone;
         }
