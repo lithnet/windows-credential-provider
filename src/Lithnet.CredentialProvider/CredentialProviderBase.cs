@@ -114,6 +114,14 @@ namespace Lithnet.CredentialProvider
         /// Gets a value that indicates if the credential provider should show a generic tile. That is, a tile that is not associated with a specific user.
         /// </summary>
         public abstract bool ShouldIncludeGenericTile();
+        
+        /// <summary>
+        /// Notifies LogonUI that one of more of the tile items has been modified, and should be reloaded
+        /// </summary>
+        public void ReloadUserTiles()
+        {
+            this.NotifyHostOfTileCollectionChange();
+        }
 
         /// <summary>
         /// Adds additional user tiles to the collection, and notifies LogonUI that new tiles are available
