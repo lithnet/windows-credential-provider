@@ -15,6 +15,7 @@ namespace Lithnet.CredentialProvider
         private protected ICredentialProviderCredentialEvents2 events2;
 
         private protected ControlCollection controls;
+        private bool isAutoLogon;
 
         protected CredentialTile(CredentialProviderBase credentialProvider)
         {
@@ -37,7 +38,16 @@ namespace Lithnet.CredentialProvider
         /// <summary>
         /// Gets a value that indicates if the user should be automatically logged on when the tile is selected. The tile must also have IsDefault set to true.
         /// </summary>
-        public bool IsAutoLogon { get; set; }
+        public bool IsAutoLogon
+        {
+            get => this.isAutoLogon;
+            set
+            {
+                this.isAutoLogon = value;
+                this.CredentialProvider.ReloadUserTiles();
+
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating if this should be the default time
@@ -87,7 +97,7 @@ namespace Lithnet.CredentialProvider
         /// Gets the HWND of the parent of the credential provider, and notifies LogonUI or CredUI that we need to create a Window
         /// </summary>
         /// <returns>A HWND to the parentobject</returns>
-        /// <exception cref="InvalidOperationException">The method was called before the host has advised that is ready to rpovide events</exception>
+        /// <exception cref="InvalidOperationException">The method was called before the host has advised that is ready to provide events</exception>
         /// <exception cref="COMException">The request to obtain the parent window HWND failed</exception>
         public IntPtr CreateParentWindowHwnd()
         {
