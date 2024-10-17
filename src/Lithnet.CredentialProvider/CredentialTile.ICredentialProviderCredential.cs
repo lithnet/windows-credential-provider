@@ -66,8 +66,8 @@ namespace Lithnet.CredentialProvider
             {
                 this.logger.LogTrace("SetSelected");
                 this.IsSelected = true;
-                pbAutoLogon = this.IsAutoLogon ? 1 : 0;
-                this.OnSelected();
+                this.OnSelected(out bool autoLogon);
+                pbAutoLogon = autoLogon ? 1 : 0;
                 return HRESULT.S_OK;
             }
             catch (Exception ex)
