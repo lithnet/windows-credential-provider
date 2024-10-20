@@ -15,6 +15,7 @@ namespace Lithnet.CredentialProvider
         private protected ICredentialProviderCredentialEvents2 events2;
 
         private protected ControlCollection controls;
+        private bool isAutoLogon;
 
         protected CredentialTile(CredentialProviderBase credentialProvider)
         {
@@ -37,12 +38,18 @@ namespace Lithnet.CredentialProvider
         /// <summary>
         /// Gets a value that indicates if the user should be automatically logged on when the tile is selected. The tile must also have IsDefault set to true.
         /// </summary>
-        public bool IsAutoLogon { get; set; }
+        public bool IsAutoLogon
+        {
+            get => this.CredentialProvider.DefaultTile == this && this.CredentialProvider.DefaultTileAutoLogon;
+        }
 
         /// <summary>
-        /// Gets a value indicating if this should be the default time
+        /// Gets a value indicating if this should be the default tile
         /// </summary>
-        public bool IsDefault { get; set; }
+        public bool IsDefault
+        {
+            get => this.CredentialProvider.DefaultTile == this;
+        }
 
         /// <summary>
         /// Gets the current usage scenario
@@ -87,7 +94,7 @@ namespace Lithnet.CredentialProvider
         /// Gets the HWND of the parent of the credential provider, and notifies LogonUI or CredUI that we need to create a Window
         /// </summary>
         /// <returns>A HWND to the parentobject</returns>
-        /// <exception cref="InvalidOperationException">The method was called before the host has advised that is ready to rpovide events</exception>
+        /// <exception cref="InvalidOperationException">The method was called before the host has advised that is ready to provide events</exception>
         /// <exception cref="COMException">The request to obtain the parent window HWND failed</exception>
         public IntPtr CreateParentWindowHwnd()
         {
@@ -155,6 +162,15 @@ namespace Lithnet.CredentialProvider
         /// Called when the user selects this tile
         /// </summary>
         protected virtual void OnSelected() { }
+
+        /// <summary>
+        /// Called after a tiles is selected to determine if the user should be automatically logged on
+        /// </summary>
+        /// <returns>True, if a logon should be immediately attempted</returns>
+        /// <remarks>
+        /// In Windows 10, if a credential provider wants to automatically log the user on in a situation Windows does not think is appropriate, the system will display a sign in button as a speed bump. One example of this is when a user with an empty password locks the computer or signs out. In that scenario, Windows does not directly log the user back in.
+        /// </remarks>
+        protected virtual bool ShouldAutoLogon() => false;
 
         /// <summary>
         /// Called when a user deselects this tile
