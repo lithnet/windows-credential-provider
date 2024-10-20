@@ -38,7 +38,7 @@ namespace Lithnet.CredentialProvider
         /// <summary>
         /// Gets a value that indicates if the user should be automatically logged on when the tile is selected. The tile must also have IsDefault set to true.
         /// </summary>
-        public bool IsAutoLogon
+        public bool IsDefaultTileAutoLogon
         {
             get => this.CredentialProvider.DefaultTile == this && this.CredentialProvider.DefaultTileAutoLogon;
         }
@@ -46,7 +46,7 @@ namespace Lithnet.CredentialProvider
         /// <summary>
         /// Gets a value indicating if this should be the default tile
         /// </summary>
-        public bool IsDefault
+        public bool IsDefaultTile
         {
             get => this.CredentialProvider.DefaultTile == this;
         }
