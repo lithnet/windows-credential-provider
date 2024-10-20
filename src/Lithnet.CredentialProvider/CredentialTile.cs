@@ -40,19 +40,16 @@ namespace Lithnet.CredentialProvider
         /// </summary>
         public bool IsAutoLogon
         {
-            get => this.isAutoLogon;
-            set
-            {
-                this.isAutoLogon = value;
-                this.CredentialProvider.ReloadUserTiles();
-
-            }
+            get => this.CredentialProvider.DefaultTile == this && this.CredentialProvider.DefaultTileAutoLogon;
         }
 
         /// <summary>
-        /// Gets a value indicating if this should be the default time
+        /// Gets a value indicating if this should be the default tile
         /// </summary>
-        public bool IsDefault { get; set; }
+        public bool IsDefault
+        {
+            get => this.CredentialProvider.DefaultTile == this;
+        }
 
         /// <summary>
         /// Gets the current usage scenario
@@ -164,14 +161,16 @@ namespace Lithnet.CredentialProvider
         /// <summary>
         /// Called when the user selects this tile
         /// </summary>
-        /// <param name="autoLogon">A value that indicates if logon should be performed immediately, without waiting for further user input</param>
+        protected virtual void OnSelected() { }
+
+        /// <summary>
+        /// Called after a tiles is selected to determine if the user should be automatically logged on
+        /// </summary>
+        /// <returns>True, if a logon should be immediately attempted</returns>
         /// <remarks>
         /// In Windows 10, if a credential provider wants to automatically log the user on in a situation Windows does not think is appropriate, the system will display a sign in button as a speed bump. One example of this is when a user with an empty password locks the computer or signs out. In that scenario, Windows does not directly log the user back in.
         /// </remarks>
-        protected virtual void OnSelected(out bool autoLogon)
-        {
-            autoLogon = false;
-        }
+        protected virtual bool ShouldAutoLogon() => false;
 
         /// <summary>
         /// Called when a user deselects this tile
