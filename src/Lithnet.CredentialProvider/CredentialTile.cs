@@ -170,7 +170,7 @@ namespace Lithnet.CredentialProvider
         /// <remarks>
         /// In Windows 10, if a credential provider wants to automatically log the user on in a situation Windows does not think is appropriate, the system will display a sign in button as a speed bump. One example of this is when a user with an empty password locks the computer or signs out. In that scenario, Windows does not directly log the user back in.
         /// </remarks>
-        protected virtual bool ShouldAutoLogon() => false;
+        protected virtual bool OnSelectedShouldAutoLogon() => false;
 
         /// <summary>
         /// Called when a user deselects this tile
