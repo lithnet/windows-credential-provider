@@ -13,9 +13,7 @@ namespace Lithnet.CredentialProvider
         private protected readonly ICredentialProviderLogger logger;
         private protected ICredentialProviderCredentialEvents events;
         private protected ICredentialProviderCredentialEvents2 events2;
-
         private protected ControlCollection controls;
-        private bool isAutoLogon;
 
         protected CredentialTile(CredentialProviderBase credentialProvider)
         {
