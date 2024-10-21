@@ -169,23 +169,20 @@ namespace Lithnet.CredentialProvider
 
                 this.notifyOnTileCollectionChange = true;
 
-                var autoLogonTile = this.Tiles.FirstOrDefault(t => t.IsAutoLogon);
-                var defaultTile = this.Tiles.FirstOrDefault(t => t.IsDefault);
+                var defaultTile = this.DefaultTile;
 
-                uint defaultIndex = CREDENTIAL_PROVIDER_NO_DEFAULT;
-                if (autoLogonTile != null)
+                if (defaultTile != null)
                 {
-                    defaultIndex = (uint)this.tiles.IndexOf(autoLogonTile);
-                }
-                else if (defaultTile != null)
-                {
-                    defaultIndex = (uint)this.tiles.IndexOf(defaultTile);
+                    var index = this.tiles.IndexOf(defaultTile);
+
+                    if (index >= 0)
+                    {
+                        pdwDefault = (uint)index;
+                        pbAutoLogonWithDefault = this.DefaultTileAutoLogon ? 1 : 0;
+                    }
                 }
 
                 pdwCount = (uint)this.Tiles.Count;
-                pdwDefault = defaultIndex;
-                pbAutoLogonWithDefault = autoLogonTile == null ? 0 : 1;
-
                 this.logger.LogTrace($"GetCredentialCount returning pdwCount: {pdwCount}, pdwDefault: {pdwDefault}, pbAutoLogonWithDefault: {pbAutoLogonWithDefault}");
 
                 return HRESULT.S_OK;

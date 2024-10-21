@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Lithnet.CredentialProvider.Interop;
@@ -114,6 +115,35 @@ namespace Lithnet.CredentialProvider
         /// Gets a value that indicates if the credential provider should show a generic tile. That is, a tile that is not associated with a specific user.
         /// </summary>
         public abstract bool ShouldIncludeGenericTile();
+
+        protected internal CredentialTile DefaultTile { get; set; }
+
+        protected internal bool DefaultTileAutoLogon { get; set; }
+
+        public void SetDefaultTile(CredentialTile tile, bool autoLogon)
+        {
+            if (this.DefaultTile == tile && this.DefaultTileAutoLogon == autoLogon)
+            {
+                return;
+            }
+
+            if (!this.Tiles.Contains(tile))
+            {
+                throw new InvalidOperationException("The default tile must be one of the tiles provided by the credential provider");
+            }
+
+            this.DefaultTile = tile;
+            this.DefaultTileAutoLogon = autoLogon;
+            this.ReloadUserTiles();
+        }
+
+        /// <summary>
+        /// Notifies LogonUI that one of more of the tile items has been modified, and should be reloaded
+        /// </summary>
+        public void ReloadUserTiles()
+        {
+            this.NotifyHostOfTileCollectionChange();
+        }
 
         /// <summary>
         /// Adds additional user tiles to the collection, and notifies LogonUI that new tiles are available
