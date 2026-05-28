@@ -25,6 +25,11 @@ namespace Lithnet.CredentialProvider
         protected BitmapControl(BitmapControl source) : base(source) { }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the bitmap should be displayed with transparency enabled.
+        /// </summary>
+        public bool EnableTransparent { get; set; } = false;
+
+        /// <summary>
         /// Specifies the background color that should replace any transparent elements of the image. This defaults to #707070
         /// </summary>
         public Color BackgroundColor
@@ -84,11 +89,15 @@ namespace Lithnet.CredentialProvider
             }
 
             var image = Bitmap.FromHbitmap(hbitmap);
-
+            if (this.EnableTransparent)
+            {
+                image.MakeTransparent(this.BackgroundColor);
+            }
             IntPtr buffer = IntPtr.Zero;
             using (MemoryStream ms = new MemoryStream())
             {
-                image.Save(ms, ImageFormat.Bmp);
+                var format = this.EnableTransparent ? ImageFormat.Png : ImageFormat.Bmp;
+                image.Save(ms, format);
                 var bitmapBytes = ms.ToArray();
                 size = (uint)bitmapBytes.Length;
                 buffer = Marshal.AllocCoTaskMem(bitmapBytes.Length);
