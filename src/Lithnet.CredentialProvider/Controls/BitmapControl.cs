@@ -22,11 +22,16 @@ namespace Lithnet.CredentialProvider
             this.backgroundColor = Color.FromArgb(70, 70, 70);
         }
 
-        protected BitmapControl(BitmapControl source) : base(source) { }
+        protected BitmapControl(BitmapControl source) : base(source)
+        {
+            this.bitmap = source.bitmap;
+            this.backgroundColor = source.backgroundColor;
+        }
 
         /// <summary>
-        /// Specifies the background color that should replace any transparent elements of the image. This defaults to #707070
+        /// Specifies the background color used to replace transparent pixels for <see cref="CredentialTile"/> and <see cref="CredentialTile2"/>. This defaults to #707070.
         /// </summary>
+        /// <remarks>This property does not apply to <see cref="CredentialTile3"/>.</remarks>
         public Color BackgroundColor
         {
             get { return this.backgroundColor; }
@@ -53,10 +58,7 @@ namespace Lithnet.CredentialProvider
                 {
                     this.bitmap = value;
 
-                    if (this.Events is ICredentialProviderCredentialEvents2 e)
-                    {
-                        e.SetFieldBitmap(this.Credential, this.Id, this.GetHBitmap());
-                    }
+                    this.UpdateBitmap();
 
                     this.RaisePropertyChanged();
                 }
@@ -76,26 +78,48 @@ namespace Lithnet.CredentialProvider
         internal IntPtr GetBitmapBuffer(out uint size)
         {
             size = 0;
-            var hbitmap = this.GetHBitmap();
 
-            if (hbitmap == IntPtr.Zero)
+            if (this.bitmap == null)
             {
                 return IntPtr.Zero;
             }
 
-            var image = Bitmap.FromHbitmap(hbitmap);
-
-            IntPtr buffer = IntPtr.Zero;
             using (MemoryStream ms = new MemoryStream())
             {
-                image.Save(ms, ImageFormat.Bmp);
+                this.bitmap.Save(ms, ImageFormat.Png);
                 var bitmapBytes = ms.ToArray();
-                size = (uint)bitmapBytes.Length;
-                buffer = Marshal.AllocCoTaskMem(bitmapBytes.Length);
+                size = checked((uint)bitmapBytes.Length);
+                IntPtr buffer = Marshal.AllocCoTaskMem(bitmapBytes.Length);
                 Marshal.Copy(bitmapBytes, 0, buffer, bitmapBytes.Length);
+                return buffer;
+            }
+        }
+
+        private void UpdateBitmap()
+        {
+            if (this.Credential is ICredentialProviderCredential3 && this.Events is ICredentialProviderCredentialEvents3 events3)
+            {
+                IntPtr buffer = this.GetBitmapBuffer(out uint size);
+
+                try
+                {
+                    events3.SetFieldBitmapBuffer(this.Credential, this.Id, size, buffer);
+                }
+                finally
+                {
+                    if (buffer != IntPtr.Zero)
+                    {
+                        Marshal.FreeCoTaskMem(buffer);
+                    }
+                }
+
+                return;
             }
 
-            return buffer;
+            if (this.Events is ICredentialProviderCredentialEvents2 events2)
+            {
+                events2.SetFieldBitmap(this.Credential, this.Id, this.GetHBitmap());
+            }
         }
     }
 }

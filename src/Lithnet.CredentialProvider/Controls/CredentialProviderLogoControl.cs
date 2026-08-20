@@ -35,10 +35,7 @@ namespace Lithnet.CredentialProvider
 
         internal override ControlBase Clone()
         {
-            var clone = new CredentialProviderLogoControl(this);
-            clone.Bitmap = this.Bitmap;
-            clone.BackgroundColor = this.BackgroundColor;
-            return clone;
+            return new CredentialProviderLogoControl(this);
         }
     }
 }

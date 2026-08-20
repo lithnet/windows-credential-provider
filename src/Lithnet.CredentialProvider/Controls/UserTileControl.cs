@@ -32,11 +32,7 @@ namespace Lithnet.CredentialProvider
 
         internal override ControlBase Clone()
         {
-            var clone = new UserTileControl(this);
-            clone.Bitmap = this.Bitmap;
-            clone.BackgroundColor = this.BackgroundColor;
-
-            return clone;
+            return new UserTileControl(this);
         }
     }
 }

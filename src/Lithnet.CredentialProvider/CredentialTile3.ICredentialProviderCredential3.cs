@@ -3,7 +3,7 @@ using Lithnet.CredentialProvider.Interop;
 
 namespace Lithnet.CredentialProvider
 {
-    internal abstract partial class CredentialTile3 : ICredentialProviderCredential3
+    public abstract partial class CredentialTile3 : ICredentialProviderCredential3
     {
         int ICredentialProviderCredential3.GetBitmapBufferValue(uint dwFieldID, out uint pImageBufferSize, out IntPtr ppImageBuffer)
         {
@@ -18,7 +18,7 @@ namespace Lithnet.CredentialProvider
 
                 if (this.Controls.TryGetControl<BitmapControl>(dwFieldID, FieldType.TileImage, out var instance))
                 {
-                    var hbitmap = instance.GetBitmapBuffer(out pImageBufferSize);
+                    ppImageBuffer = instance.GetBitmapBuffer(out pImageBufferSize);
                     return HRESULT.S_OK;
                 }
 
