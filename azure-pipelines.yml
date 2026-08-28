@@ -26,9 +26,59 @@ name: $(build.version.major).$(build.version.minor).$(build.version.revision)$(b
 trigger: none
 
 stages:
+- stage: test_provider
+  displayName: Test credential provider
+  dependsOn: []
+  jobs:
+    - job: test_windows
+      displayName: Test Windows
+      strategy:
+        matrix:
+          x64:
+            testArchitecture: x64
+            testImage: windows-latest
+            testProject: src/Lithnet.CredentialProvider.UnitTests.x64/Lithnet.CredentialProvider.UnitTests.x64.csproj
+          x86:
+            testArchitecture: x86
+            testImage: windows-latest
+            testProject: src/Lithnet.CredentialProvider.UnitTests.x86/Lithnet.CredentialProvider.UnitTests.x86.csproj
+          arm64:
+            testArchitecture: ARM64
+            testImage: windows-11-vs2026-arm
+            testProject: src/Lithnet.CredentialProvider.UnitTests.arm64/Lithnet.CredentialProvider.UnitTests.arm64.csproj
+      pool:
+        vmImage: $(testImage)
+      steps:
+        - task: UseDotNet@2
+          displayName: Install .NET 8 SDK
+          inputs:
+            packageType: sdk
+            version: 8.0.x
+
+        - task: UseDotNet@2
+          displayName: Install .NET 9 SDK
+          inputs:
+            packageType: sdk
+            version: 9.0.x
+
+        - task: UseDotNet@2
+          displayName: Install .NET 10 SDK
+          inputs:
+            packageType: sdk
+            version: 10.0.x
+
+        - task: DotNetCoreCLI@2
+          displayName: Test $(testArchitecture)
+          inputs:
+            command: test
+            projects: $(testProject)
+            arguments: '--configuration $(buildConfiguration)'
+            publishTestResults: true
+            testRunTitle: Credential Provider $(testArchitecture)
+
 - stage: build_provider
   displayName: Build credential provider
-  dependsOn: []
+  dependsOn: test_provider
   jobs:
     - job: "build_provider_job"
       steps:

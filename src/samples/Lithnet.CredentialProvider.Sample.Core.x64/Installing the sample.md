@@ -7,10 +7,10 @@ In order to install and run the sample app, you have to register the COM compone
 Build the EXE, and from an elevated command prompt, change to the bin folder, and run the following commands
 
 ```
-regsvr32 "Lithnet.CredentialProvider.Sample.net6.0.x64.comhost.dll"
+regsvr32 "Lithnet.CredentialProvider.Sample.Core.x64.comhost.dll"
 
 REG ADD "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\Credential Providers\{4cd12d80-9259-4f38-94dc-1828080ad9ff}" /f
-REG ADD "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\Credential Providers\{4cd12d80-9259-4f38-94dc-1828080ad9ff}" /ve /t REG_SZ /f /d "Lithnet.CredentialProvider.Sample.net6.0.x64"
+REG ADD "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\Credential Providers\{4cd12d80-9259-4f38-94dc-1828080ad9ff}" /ve /t REG_SZ /f /d "Lithnet.CredentialProvider.Sample.Core.x64"
 ```
 
 ## Disable the sample
@@ -31,6 +31,6 @@ REG ADD "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\Credentia
 To remove the credential provider, run the following command.
 
 ```
-regsvr32 /u "Lithnet.CredentialProvider.Sample.net6.0.x64.comhost.dll"
+regsvr32 /u "Lithnet.CredentialProvider.Sample.Core.x64.comhost.dll"
 REG DELETE "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\Credential Providers\{4cd12d80-9259-4f38-94dc-1828080ad9ff}" /f
 ```

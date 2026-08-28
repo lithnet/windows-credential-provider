@@ -9,8 +9,8 @@ Build the EXE, and from an elevated command prompt, change to the bin folder, an
 ```
 SETLOCAL
 SET CLSID={4EB911FA-CA18-40EA-86DF-19AFF5D1DA58}
-SET BinaryPath=D:\dev\git\lithnet\windows-credential-provider\src\samples\Lithnet.CredentialProvider.Sample.net472.x64\bin\Debug\net472\Lithnet.CredentialProvider.Sample.net472.x64.dll
-REM %windir%\Microsoft.NET\Framework64\v4.0.30319\regasm /codebase "Lithnet.CredentialProvider.Sample.net472.x64.dll"
+SET BinaryPath=D:\dev\git\lithnet\windows-credential-provider\src\samples\Lithnet.CredentialProvider.Sample.Framework.x64\bin\Debug\net472\Lithnet.CredentialProvider.Sample.Framework.x64.dll
+REM %windir%\Microsoft.NET\Framework64\v4.0.30319\regasm /codebase "Lithnet.CredentialProvider.Sample.Framework.x64.dll"
 
 REG ADD "HKLM\SOFTWARE\Classes\CLSID\%CLSID%" /ve /t REG_SZ /f /d  "Lithnet.CredentialProvider.Samples.TestCredentialProvider"
 REG ADD "HKLM\SOFTWARE\Classes\CLSID\%CLSID%\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}"
@@ -20,11 +20,11 @@ REM REG ADD "HKLM\SOFTWARE\Classes\CLSID\%CLSID%\InprocServer32" /v "Class" /t R
 REG ADD "HKLM\SOFTWARE\Classes\CLSID\%CLSID%\InprocServer32" /v "RuntimeVersion" /t REG_SZ /f /d "v4.0.30319"
 REG ADD "HKLM\SOFTWARE\Classes\CLSID\%CLSID%\InprocServer32" /v "CodeBase" /t REG_SZ /f /d "%BinaryPath%"
 
-REG ADD "HKLM\SOFTWARE\Classes\Lithnet.CredentialProvider.Sample.net472.x64" /ve /t REG_SZ /f /d "Lithnet.CredentialProvider.Samples.TestCredentialProvider"
-REG ADD "HKLM\SOFTWARE\Classes\Lithnet.CredentialProvider.Sample.net472.x64\CLSID" /ve /t REG_SZ /f /d "%CLSID%"
+REG ADD "HKLM\SOFTWARE\Classes\Lithnet.CredentialProvider.Sample.Framework.x64" /ve /t REG_SZ /f /d "Lithnet.CredentialProvider.Samples.TestCredentialProvider"
+REG ADD "HKLM\SOFTWARE\Classes\Lithnet.CredentialProvider.Sample.Framework.x64\CLSID" /ve /t REG_SZ /f /d "%CLSID%"
 
 
-REG ADD "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\Credential Providers\%CLSID%" /ve /t REG_SZ /f /d "Lithnet.CredentialProvider.Sample.net472.x64"
+REG ADD "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\Credential Providers\%CLSID%" /ve /t REG_SZ /f /d "Lithnet.CredentialProvider.Sample.Framework.x64"
 ```
 
 ## Disable the sample
@@ -45,6 +45,6 @@ REG ADD "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\Credentia
 To remove the credential provider, run the following command.
 
 ```
-%windir%\Microsoft.NET\Framework64\v4.0.30319\regasm /u "Lithnet.CredentialProvider.Sample.net472.x64.dll"
+%windir%\Microsoft.NET\Framework64\v4.0.30319\regasm /u "Lithnet.CredentialProvider.Sample.Framework.x64.dll"
 REG DELETE "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\Credential Providers\{4eb911fa-ca18-40ea-86df-19aff5d1da58"}" /f
 ```
