@@ -1,3 +1,10 @@
+resources:
+  repositories:
+  - repository: release_tools
+    type: git
+    name: release-tools/release-tools
+    ref: refs/heads/master
+
 pool:
   vmImage: 'windows-latest'
 
@@ -42,10 +49,6 @@ stages:
             testArchitecture: x86
             testImage: windows-latest
             testProject: src/Lithnet.CredentialProvider.UnitTests.x86/Lithnet.CredentialProvider.UnitTests.x86.csproj
-          arm64:
-            testArchitecture: ARM64
-            testImage: windows-11-vs2026-arm
-            testProject: src/Lithnet.CredentialProvider.UnitTests.arm64/Lithnet.CredentialProvider.UnitTests.arm64.csproj
       pool:
         vmImage: $(testImage)
       steps:
@@ -75,6 +78,65 @@ stages:
             arguments: '--configuration $(buildConfiguration)'
             publishTestResults: true
             testRunTitle: Credential Provider $(testArchitecture)
+
+    - template: templates/azure-vm-start.yaml@release_tools
+      parameters:
+        jobName: start_arm64_test_vm
+        vmNames: cpw1125a64-ci
+        deployEnvironment: CredentialProvider
+        distroType: win
+        resourceGroup: rg-ams-testhosts
+        azureSubscription: CredentialProviderAzureTestLab
+        agentMode: pool
+        targetPoolName: CredentialProvider
+
+    - job: test_windows_arm64
+      displayName: Test Windows ARM64
+      dependsOn: start_arm64_test_vm
+      pool:
+        name: CredentialProvider
+        demands:
+          - arch -equals arm64
+          - role -equals unittest
+          - product -equals credential-provider
+      steps:
+        - task: UseDotNet@2
+          displayName: Install .NET 8 SDK
+          inputs:
+            packageType: sdk
+            version: 8.0.x
+
+        - task: UseDotNet@2
+          displayName: Install .NET 9 SDK
+          inputs:
+            packageType: sdk
+            version: 9.0.x
+
+        - task: UseDotNet@2
+          displayName: Install .NET 10 SDK
+          inputs:
+            packageType: sdk
+            version: 10.0.x
+
+        - task: DotNetCoreCLI@2
+          displayName: Test ARM64
+          inputs:
+            command: test
+            projects: src/Lithnet.CredentialProvider.UnitTests.arm64/Lithnet.CredentialProvider.UnitTests.arm64.csproj
+            arguments: '--configuration $(buildConfiguration) --arch arm64'
+            publishTestResults: true
+            testRunTitle: Credential Provider ARM64
+
+    - template: templates/azure-vm-stop.yaml@release_tools
+      parameters:
+        jobName: stop_arm64_test_vm
+        vmNames: cpw1125a64-ci
+        deployEnvironment: CredentialProvider
+        distroType: win
+        resourceGroup: rg-ams-testhosts
+        azureSubscription: CredentialProviderAzureTestLab
+        dependsOn: test_windows_arm64
+        condition: always()
 
 - stage: build_provider
   displayName: Build credential provider
