@@ -70,8 +70,31 @@ stages:
             packageType: sdk
             version: 10.0.x
 
+        - task: PowerShell@2
+          displayName: Install x86 .NET runtimes
+          condition: eq(variables['testArchitecture'], 'x86')
+          inputs:
+            targetType: inline
+            script: |
+              $ErrorActionPreference = 'Stop'
+              $installScriptPath = "$(Agent.TempDirectory)\dotnet-install.ps1"
+              $runtimePath = "$(Agent.TempDirectory)\dotnet-x86"
+
+              Invoke-WebRequest -Uri 'https://dot.net/v1/dotnet-install.ps1' -OutFile $installScriptPath
+
+              foreach ($channel in @('8.0', '9.0', '10.0'))
+              {
+                  & $installScriptPath -Runtime dotnet -Channel $channel -Architecture x86 -InstallDir $runtimePath -NoPath
+                  if (-not $?)
+                  {
+                      throw "Failed to install the .NET $channel x86 runtime"
+                  }
+              }
+
         - task: DotNetCoreCLI@2
           displayName: Test $(testArchitecture)
+          env:
+            DOTNET_ROOT_X86: $(Agent.TempDirectory)\dotnet-x86
           inputs:
             command: test
             projects: $(testProject)
