@@ -12,13 +12,13 @@ namespace Lithnet.CredentialProvider
         private string password;
 
         /// <summary>
-        /// Creates a new <c ref="InsecurePasswordTextboxControl"/> control
+        /// Creates a new <see cref="InsecurePasswordTextboxControl"/> control.
         /// </summary>
         /// <param name="key">The unique key for this control</param>
         public InsecurePasswordTextboxControl(string key) : this(key, null) { }
 
         /// <summary>
-        /// Creates a new <c ref="InsecurePasswordTextboxControl"/> control
+        /// Creates a new <see cref="InsecurePasswordTextboxControl"/> control.
         /// </summary>
         /// <param name="key">The unique key for this control</param>
         /// <param name="label">The label associated with the control</param>

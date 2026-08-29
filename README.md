@@ -113,7 +113,7 @@ public override CredentialTile2 CreateUserTile(CredentialProviderUser user)
 }
 ```
 
-* Create your tile class. Inherit from `CredentialTile2` if you want to create personalized tiles supported by Windows 8 and later, or `CredentialTile1` if you only want to implement a generic tile. Grab the instances of your controls in the `Initialize` method, so you can attach to their properties to read and respond to value changes. Finally, override the `GetCredentials` method, which is called when the user clicks the submit button.
+* Create your tile class. Inherit from `CredentialTile2` if you want to create personalized tiles supported by Windows 8 and later, or `CredentialTile` if you only want to implement a generic tile. Use `CredentialTile3` when an image must preserve transparency. Grab the instances of your controls in the `Initialize` method, so you can attach to their properties to read and respond to value changes. Finally, override the `GetCredentials` method, which is called when the user clicks the submit button.
 
 ```cs
 public class MyTile : CredentialTile2
@@ -188,10 +188,44 @@ public class MyTile : CredentialTile2
         };
     }
 }
+```
 
 * Build your project and you have a functional credential provider!
 
+## Bitmap transparency
+
+`CredentialProviderLogoControl` and `UserTileControl` both accept a `Bitmap`. The tile base class controls how Windows receives images that contain transparent or partially transparent pixels.
+
+| Tile base class | Image behaviour |
+|-----------------|-----------------|
+| `CredentialTile` | Renders transparency against the control's `BackgroundColor`. |
+| `CredentialTile2` | Renders transparency against the control's `BackgroundColor`. |
+| `CredentialTile3` | Preserves the image's alpha channel and ignores `BackgroundColor`. |
+
+Existing providers that inherit from `CredentialTile` or `CredentialTile2` keep their current behaviour. The default `BackgroundColor` is `#464646`.
+
+To preserve transparency, inherit your tile class from `CredentialTile3` and provide a `Bitmap` with an alpha channel. The library selects the image representation required by Windows, so your provider does not need to handle that conversion.
+
+```cs
+public class MyTile : CredentialTile3
+{
+    public MyTile(CredentialProviderBase credentialProvider) : base(credentialProvider)
+    {
+    }
+
+    public MyTile(CredentialProviderBase credentialProvider, CredentialProviderUser user) : base(credentialProvider, user)
+    {
+    }
+}
+
+public override IEnumerable<ControlBase> GetControls(UsageScenario cpus)
+{
+    Bitmap image = LoadTransparentBitmap();
+    yield return new UserTileControl("UserTile", "User tile image", image);
+    yield return new CredentialProviderLogoControl("ProviderLogo", "Credential provider logo", image);
+}
 ```
+
 ## Installing the credential provider 
 You can use the traditional methods of registering a credential provider (regasm, regsvr32, create registry keys etc), but we've provided a PowerShell module to automatically register your credential provider with a single command.
 

@@ -9,13 +9,13 @@ namespace Lithnet.CredentialProvider
     public class SmallLabelControl : ControlBase
     {
         /// <summary>
-        /// Creates a new <c ref="SmallLabelControl"/> control
+        /// Creates a new <see cref="SmallLabelControl"/> control.
         /// </summary>
         /// <param name="key">The unique key for this control</param>
         public SmallLabelControl(string key) : this(key, null, false) { }
 
         /// <summary>
-        /// Creates a new <c ref="SmallLabelControl"/> control
+        /// Creates a new <see cref="SmallLabelControl"/> control.
         /// </summary>
         /// <param name="key">The unique key for this control</param>
         /// <param name="label">The label associated with the control</param>

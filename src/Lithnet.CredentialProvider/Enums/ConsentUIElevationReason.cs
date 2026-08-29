@@ -1,5 +1,8 @@
 ﻿namespace Lithnet.CredentialProvider
 {
+    /// <summary>
+    /// Specifies the reason that Consent UI received an elevation request.
+    /// </summary>
     public enum ConsentUIElevationReason
     {
         /// <summary>

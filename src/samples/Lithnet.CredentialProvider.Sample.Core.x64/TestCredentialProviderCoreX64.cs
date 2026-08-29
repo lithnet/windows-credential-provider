@@ -101,6 +101,7 @@ namespace Lithnet.CredentialProvider.Samples
 
         private static Bitmap CreateTransparentUserTile()
         {
+            // CredentialTile3 preserves the alpha channel in this image. CredentialTile and CredentialTile2 render it against the control's BackgroundColor.
             Bitmap image = new Bitmap(128, 128, PixelFormat.Format32bppArgb);
 
             using (Graphics graphics = Graphics.FromImage(image))

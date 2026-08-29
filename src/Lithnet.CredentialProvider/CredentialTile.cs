@@ -15,6 +15,10 @@ namespace Lithnet.CredentialProvider
         private protected ICredentialProviderCredentialEvents2 events2;
         private protected ControlCollection controls;
 
+        /// <summary>
+        /// Initializes a version 1 credential tile.
+        /// </summary>
+        /// <param name="credentialProvider">The credential provider that owns this tile.</param>
         protected CredentialTile(CredentialProviderBase credentialProvider)
         {
             this.CredentialProvider = credentialProvider;
@@ -34,7 +38,7 @@ namespace Lithnet.CredentialProvider
         public bool IsSelected { get; private set; }
 
         /// <summary>
-        /// Gets a value that indicates if the user should be automatically logged on when the tile is selected. The tile must also have IsDefault set to true.
+        /// Gets a value that indicates whether Logon UI or Credential UI should immediately request serialization from this tile. The tile must also be the default tile.
         /// </summary>
         public bool IsDefaultTileAutoLogon
         {
@@ -111,7 +115,7 @@ namespace Lithnet.CredentialProvider
         }
 
         /// <summary>
-        /// Indicates to the host that multiple updates need to be made to the fields, and that it should delay updating the UI until <see cref="EndBulkFieldUpdate" is called/>
+        /// Indicates to the host that multiple fields will be updated and that it should delay updating the UI until <see cref="EndBulkFieldUpdate"/> is called.
         /// </summary>
         /// <exception cref="InvalidOperationException"></exception>
         public void BeginBulkFieldUpdate()
@@ -176,7 +180,7 @@ namespace Lithnet.CredentialProvider
         protected virtual void OnDeselected() { }
 
         /// <summary>
-        /// Called just before credentials are serialized and returned to the host
+        /// Called immediately before credentials are serialized and returned to the host
         /// </summary>
         protected virtual void OnBeforeSerialize() { }
 

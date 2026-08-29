@@ -1,7 +1,7 @@
 ﻿namespace Lithnet.CredentialProvider
 {
     /// <summary>
-    /// The <c ref="ChangePasswordResponse"/> object is used to communicate the results of a password change operation to LogonUI
+    /// The <see cref="ChangePasswordResponse"/> object communicates the result of a password change operation to LogonUI.
     /// </summary>
     public class ChangePasswordResponse
     {

@@ -11,7 +11,14 @@ namespace Lithnet.CredentialProvider
     {
         private readonly List<string> backingList = new List<string>();
 
+        /// <summary>
+        /// Occurs after an item is added to the list.
+        /// </summary>
         public event EventHandler<string> ItemAdded;
+
+        /// <summary>
+        /// Occurs after an item is removed from the list. The event value is the former zero-based index of the item.
+        /// </summary>
         public event EventHandler<int> ItemRemoved;
 
         /// <summary>

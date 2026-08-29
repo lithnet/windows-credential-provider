@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Lithnet.CredentialProvider
 {
+    /// <summary>
+    /// Specifies options that control the Windows credential user interface.
+    /// </summary>
     [Flags]
     public enum CredUIWinFlags
     {

@@ -8,13 +8,20 @@ using Lithnet.CredentialProvider.Interop;
 namespace Lithnet.CredentialProvider
 {
     /// <summary>
-    /// The base class of image-based controls
+    /// Provides common image behaviour for credential provider logo and user tile controls.
     /// </summary>
     public abstract class BitmapControl : ControlBase
     {
         private Bitmap bitmap;
         private Color backgroundColor;
 
+        /// <summary>
+        /// Initializes an image control.
+        /// </summary>
+        /// <param name="key">The unique key for the control.</param>
+        /// <param name="label">The label associated with the control.</param>
+        /// <param name="isProviderLogo"><see langword="true"/> to identify the image as the credential provider logo; otherwise, <see langword="false"/>.</param>
+        /// <param name="bitmap">The initial image displayed by the control.</param>
         protected BitmapControl(string key, string label, bool isProviderLogo, Bitmap bitmap) :
             base(key, label, FieldType.TileImage, isProviderLogo ? Guid.Parse(CredProviderConstants.CPFG_CREDENTIAL_PROVIDER_LOGO) : Guid.Empty)
         {
@@ -22,6 +29,10 @@ namespace Lithnet.CredentialProvider
             this.backgroundColor = Color.FromArgb(70, 70, 70);
         }
 
+        /// <summary>
+        /// Initializes an image control by copying an existing image control.
+        /// </summary>
+        /// <param name="source">The image control to copy.</param>
         protected BitmapControl(BitmapControl source) : base(source)
         {
             this.bitmap = source.bitmap;
@@ -29,9 +40,9 @@ namespace Lithnet.CredentialProvider
         }
 
         /// <summary>
-        /// Specifies the background color used to replace transparent pixels for <see cref="CredentialTile"/> and <see cref="CredentialTile2"/>. This defaults to #707070.
+        /// Gets or sets the background color used when an image that contains transparency is displayed by a <see cref="CredentialTile"/> or <see cref="CredentialTile2"/>.
         /// </summary>
-        /// <remarks>This property does not apply to <see cref="CredentialTile3"/>.</remarks>
+        /// <remarks>The default color is #464646. A <see cref="CredentialTile3"/> preserves the image's alpha channel and does not use this property.</remarks>
         public Color BackgroundColor
         {
             get { return this.backgroundColor; }
@@ -46,7 +57,7 @@ namespace Lithnet.CredentialProvider
         }
 
         /// <summary>
-        /// The image to be displayed
+        /// Gets or sets the image displayed by the control.
         /// </summary>
         public Bitmap Bitmap
         {
