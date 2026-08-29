@@ -164,6 +164,9 @@ stages:
 - stage: build_provider
   displayName: Build credential provider
   dependsOn: test_provider
+  # Pull request builds validate every target framework in test_provider. Release
+  # stages require signing secrets and can publish packages and GitHub releases.
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   jobs:
     - job: "build_provider_job"
       steps:
