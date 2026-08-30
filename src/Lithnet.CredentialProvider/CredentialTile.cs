@@ -11,6 +11,7 @@ namespace Lithnet.CredentialProvider
     public abstract partial class CredentialTile
     {
         private protected readonly ICredentialProviderLogger logger;
+        private IntPtr eventsUnknown;
         private protected ICredentialProviderCredentialEvents events;
         private protected ICredentialProviderCredentialEvents2 events2;
         private protected ControlCollection controls;
