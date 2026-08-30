@@ -2,9 +2,15 @@
 
 namespace Lithnet.CredentialProvider
 {
+    /// <summary>
+    /// Specifies how Consent UI should display and verify an elevation request.
+    /// </summary>
     [Flags]
     public enum ConsentUIFlags
     {
+        /// <summary>
+        /// The purpose of the 0x01 flag is not documented.
+        /// </summary>
         SkipSignatureVerification = 0x01,
 
         /// <summary>
@@ -12,8 +18,19 @@ namespace Lithnet.CredentialProvider
         /// </summary>
         SecureDesktop = 0x02,
 
+        /// <summary>
+        /// The purpose of the 0x04 flag is not documented.
+        /// </summary>
         Unknown1 = 0x04,
+
+        /// <summary>
+        /// The purpose of the 0x08 flag is not documented.
+        /// </summary>
         Unknown2 = 0x08,
+
+        /// <summary>
+        /// The purpose of the 0x10 flag is not documented.
+        /// </summary>
         Unknown3 = 0x10,
 
         /// <summary>
@@ -42,6 +59,9 @@ namespace Lithnet.CredentialProvider
         /// </summary>
         AutoElevationOther = 0x100,
 
+        /// <summary>
+        /// The purpose of the 0x200 flag is not documented.
+        /// </summary>
         Unknown4 = 0x200,
 
         /// <summary>

@@ -5,7 +5,10 @@ using Microsoft.Extensions.Logging;
 
 namespace Lithnet.CredentialProvider.Samples
 {
-    public class TestCredentialProviderTile : CredentialTile2
+    /// <summary>
+    /// Demonstrates a version 3 credential tile that preserves image transparency.
+    /// </summary>
+    public class TestCredentialProviderTile : CredentialTile3
     {
         private TextboxControl UsernameControl;
         private SecurePasswordTextboxControl PasswordControl;

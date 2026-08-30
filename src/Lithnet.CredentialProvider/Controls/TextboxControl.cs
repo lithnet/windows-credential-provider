@@ -13,13 +13,13 @@ namespace Lithnet.CredentialProvider
         private TextboxControl(TextboxControl source) : base(source) { }
 
         /// <summary>
-        /// Creates a new <c ref="TextboxControl"/> control
+        /// Creates a new <see cref="TextboxControl"/> control.
         /// </summary>
         /// <param name="key">The unique key for this control</param>
         public TextboxControl(string key) : this(key, null) { }
 
         /// <summary>
-        /// Creates a new <c ref="TextboxControl"/> control
+        /// Creates a new <see cref="TextboxControl"/> control.
         /// </summary>
         /// <param name="key">The unique key for this control</param>
         /// <param name="label">The label associated with the control</param>

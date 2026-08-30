@@ -67,6 +67,10 @@ namespace Lithnet.CredentialProvider
         /// </summary>
         public CredentialSerialization InboundSerialization { get; private set; }
 
+        /// <summary>
+        /// Initializes a credential provider and obtains its identifier from the <see cref="GuidAttribute"/> on the derived class.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">The derived credential provider class does not have a <see cref="GuidAttribute"/>.</exception>
         protected CredentialProviderBase()
         {
             this.LoggerFactory = this.GetLoggerFactory();
@@ -84,13 +88,13 @@ namespace Lithnet.CredentialProvider
         }
 
         /// <summary>
-        /// Gets a logger factory. Override this method and provide an implementation of <c ref="ILoggerFactory"/> to enable credential provider logging
+        /// Gets a logger factory. Override this method and provide an implementation of <see cref="ICredentialProviderLoggerFactory"/> to enable credential provider logging.
         /// </summary>
-        /// <returns>An ILoggerFactory instance</returns>
+        /// <returns>An <see cref="ICredentialProviderLoggerFactory"/> instance.</returns>
         protected virtual ICredentialProviderLoggerFactory GetLoggerFactory() { return TraceLoggerFactory.Instance; }
 
         /// <summary>
-        /// Gets a value indicating if the credential provider supports the <c ref="UsageScenario"/> provided by LogonUI or CredUI
+        /// Gets a value indicating whether the credential provider supports the <see cref="UsageScenario"/> provided by LogonUI or CredUI.
         /// </summary>
         /// <param name="cpus">The usage scenario</param>
         /// <param name="dwFlags">Additional flags provided by CredUI</param>
@@ -116,10 +120,22 @@ namespace Lithnet.CredentialProvider
         /// </summary>
         public abstract bool ShouldIncludeGenericTile();
 
+        /// <summary>
+        /// Gets or sets the tile that the credential provider reports as the default credential.
+        /// </summary>
         protected internal CredentialTile DefaultTile { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value that indicates whether Logon UI or Credential UI should immediately request serialization from the default tile.
+        /// </summary>
         protected internal bool DefaultTileAutoLogon { get; set; }
 
+        /// <summary>
+        /// Sets the default tile, configures its automatic logon request, and notifies the credential UI to enumerate the tiles again.
+        /// </summary>
+        /// <param name="tile">A tile in the current <see cref="Tiles"/> collection.</param>
+        /// <param name="autoLogon"><see langword="true"/> to make Logon UI or Credential UI immediately request serialization from the default tile; otherwise, <see langword="false"/>.</param>
+        /// <exception cref="InvalidOperationException"><paramref name="tile"/> is not in the current <see cref="Tiles"/> collection.</exception>
         public void SetDefaultTile(CredentialTile tile, bool autoLogon)
         {
             if (this.DefaultTile == tile && this.DefaultTileAutoLogon == autoLogon)
@@ -188,7 +204,7 @@ namespace Lithnet.CredentialProvider
         }
 
         /// <summary>
-        /// This method is used to generate the generic tile for this credential provider. This is called when <c ref="ShouldIncludeGenericTile"/> return true
+        /// Creates the generic tile for this credential provider. This method is called when <see cref="ShouldIncludeGenericTile"/> returns <see langword="true"/>.
         /// </summary>
         public abstract CredentialTile CreateGenericTile();
 

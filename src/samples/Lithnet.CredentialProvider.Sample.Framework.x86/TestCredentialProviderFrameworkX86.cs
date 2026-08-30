@@ -9,11 +9,11 @@ namespace Lithnet.CredentialProvider.Samples
 {
     [ComVisible(true)]
     [ClassInterface(ClassInterfaceType.None)]
-    [ProgId("Lithnet.CredentialProvider.Sample.net6.0.x64")]
-    [Guid("4cd12d80-9259-4f38-94dc-1828080ad9ff")]
-    public class TestCredentialProviderNet60x64 : CredentialProviderBase
+    [ProgId("Lithnet.CredentialProvider.Sample.Framework.x86")]
+    [Guid("c9055c88-03f9-4a12-8e33-1ee75826a4a6")]
+    public class TestCredentialProviderFrameworkX86 : CredentialProviderBase
     {
-        private static readonly ICredentialProviderLogger logger = InternalLoggerFactory.Instance.CreateLogger<TestCredentialProviderNet60x64>();
+        private static readonly ICredentialProviderLogger logger = InternalLoggerFactory.Instance.CreateLogger<TestCredentialProviderFrameworkX86>();
 
         protected override ICredentialProviderLoggerFactory GetLoggerFactory()
         {
@@ -34,10 +34,9 @@ namespace Lithnet.CredentialProvider.Samples
             }
             else
             {
+                var image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Lithnet.CredentialProvider.Sample.Framework.x86.Resources.TileIcon.png"));
+
                 yield return new CredentialProviderLabelControl(ControlKeys.LabelCredentialProvider, "Login with showcase credential provider");
-
-                var image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Lithnet.CredentialProvider.Sample.net6.0.x64.Resources.TileIcon.png"));
-
                 yield return new CredentialProviderLogoControl(ControlKeys.ImageCredentialProvider, "Credential provider logo", image);
                 yield return new CredentialProviderLogoControl(ControlKeys.ImageUserTile, "User tile image", image);
 

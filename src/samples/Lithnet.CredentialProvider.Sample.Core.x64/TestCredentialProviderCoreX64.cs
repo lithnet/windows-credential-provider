@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
@@ -10,10 +11,12 @@ namespace Lithnet.CredentialProvider.Samples
 {
     [ComVisible(true)]
     [ClassInterface(ClassInterfaceType.None)]
-    [ProgId("Lithnet.CredentialProvider.Sample.net472.x64")]
-    [Guid("4eb911fa-ca18-40ea-86df-19aff5d1da58")]
-    public class TestCredentialProviderNet472x64 : CredentialProviderBase
+    [ProgId("Lithnet.CredentialProvider.Sample.Core.x64")]
+    [Guid("4cd12d80-9259-4f38-94dc-1828080ad9ff")]
+    public class TestCredentialProviderCoreX64 : CredentialProviderBase
     {
+        private static readonly ICredentialProviderLogger logger = InternalLoggerFactory.Instance.CreateLogger<TestCredentialProviderCoreX64>();
+
         protected override ICredentialProviderLoggerFactory GetLoggerFactory()
         {
             return InternalLoggerFactory.Instance;
@@ -33,11 +36,13 @@ namespace Lithnet.CredentialProvider.Samples
             }
             else
             {
-                var image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Lithnet.CredentialProvider.Sample.net472.x64.Resources.TileIcon.png"));
-
                 yield return new CredentialProviderLabelControl(ControlKeys.LabelCredentialProvider, "Login with showcase credential provider");
-                yield return new CredentialProviderLogoControl(ControlKeys.ImageCredentialProvider, "Credential provider logo", image);
-                yield return new CredentialProviderLogoControl(ControlKeys.ImageUserTile, "User tile image", image);
+
+                var providerLogo = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Lithnet.CredentialProvider.Sample.Core.x64.Resources.TileIcon.png"));
+                var transparentUserTile = CreateTransparentUserTile();
+
+                yield return new CredentialProviderLogoControl(ControlKeys.ImageCredentialProvider, "Credential provider logo", providerLogo);
+                yield return new UserTileControl(ControlKeys.ImageUserTile, "Transparent user tile image", transparentUserTile);
 
                 yield return new LargeLabelControl(ControlKeys.LabelLargeHeading, "The is our showcase credential provider");
                 yield return new SmallLabelControl(ControlKeys.LabelSmallHeading, "Let's see what we can do");
@@ -92,6 +97,26 @@ namespace Lithnet.CredentialProvider.Samples
         public override CredentialTile2 CreateUserTile(CredentialProviderUser user)
         {
             return new TestCredentialProviderTile(this, user);
+        }
+
+        private static Bitmap CreateTransparentUserTile()
+        {
+            // CredentialTile3 preserves the alpha channel in this image. CredentialTile and CredentialTile2 render it against the control's BackgroundColor.
+            Bitmap image = new Bitmap(128, 128, PixelFormat.Format32bppArgb);
+
+            using (Graphics graphics = Graphics.FromImage(image))
+            using (SolidBrush shadow = new SolidBrush(Color.FromArgb(96, 0, 0, 0)))
+            using (SolidBrush foreground = new SolidBrush(Color.FromArgb(255, 38, 132, 255)))
+            using (Pen outline = new Pen(Color.White, 5))
+            {
+                graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                graphics.Clear(Color.Transparent);
+                graphics.FillEllipse(shadow, 28, 30, 88, 88);
+                graphics.FillEllipse(foreground, 12, 12, 88, 88);
+                graphics.DrawEllipse(outline, 12, 12, 88, 88);
+            }
+
+            return image;
         }
     }
 }

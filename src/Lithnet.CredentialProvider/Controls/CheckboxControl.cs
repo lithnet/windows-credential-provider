@@ -10,13 +10,13 @@ namespace Lithnet.CredentialProvider
         private bool isChecked;
 
         /// <summary>
-        /// Creates a new <c ref="CheckboxControl"/> control
+        /// Creates a new <see cref="CheckboxControl"/> control.
         /// </summary>
         /// <param name="key">The unique key for this control</param>
         public CheckboxControl(string key) : this(key, null) { }
 
         /// <summary>
-        /// Creates a new <c ref="CheckboxControl"/> control
+        /// Creates a new <see cref="CheckboxControl"/> control.
         /// </summary>
         /// <param name="key">The unique key for this control</param>
         /// <param name="label">The label associated with the control</param>

@@ -1,5 +1,8 @@
 ﻿namespace Lithnet.CredentialProvider
 {
+	/// <summary>
+	/// Specifies how the credential UI should continue after a credential provider handles a serialization request.
+	/// </summary>
 	public enum SerializationResponse
 	{
 		/// <summary>

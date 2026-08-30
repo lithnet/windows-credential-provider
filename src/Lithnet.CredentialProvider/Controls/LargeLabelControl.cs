@@ -8,13 +8,13 @@ namespace Lithnet.CredentialProvider
     public class LargeLabelControl : ControlBase
     {
         /// <summary>
-        /// Creates a new <c ref="LargeLabelControl"/> control
+        /// Creates a new <see cref="LargeLabelControl"/> control.
         /// </summary>
         /// <param name="key">The unique key for this control</param>
         public LargeLabelControl(string key) : this(key, null) { }
 
         /// <summary>
-        /// Creates a new <c ref="LargeLabelControl"/> control
+        /// Creates a new <see cref="LargeLabelControl"/> control.
         /// </summary>
         /// <param name="key">The unique key for this control</param>
         /// <param name="label">The label associated with the control</param>

@@ -23,8 +23,17 @@
         /// <remarks>This does not apply in scenarios where a personalized tile is provided</remarks>
         public GenericTileDisplayMode GenericTileDisplayMode { get; set; }
 
+        /// <summary>
+        /// Initializes a generic version 2 credential tile.
+        /// </summary>
+        /// <param name="credentialProvider">The credential provider that owns this tile.</param>
         protected CredentialTile2(CredentialProviderBase credentialProvider) : this(credentialProvider, null) { }
 
+        /// <summary>
+        /// Initializes a version 2 credential tile for a user.
+        /// </summary>
+        /// <param name="credentialProvider">The credential provider that owns this tile.</param>
+        /// <param name="user">The user represented by this tile, or <see langword="null"/> for a generic tile.</param>
         protected CredentialTile2(CredentialProviderBase credentialProvider, CredentialProviderUser user) : base(credentialProvider)
         {
             this.User = user;

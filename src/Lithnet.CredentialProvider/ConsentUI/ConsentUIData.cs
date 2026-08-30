@@ -17,7 +17,7 @@ namespace Lithnet.CredentialProvider
     /// ConsentUIData is an abstract base class that represents all the different types of data structures that can be passed to the ConsentUI process for a UAC elevation prompt.
     /// The static members of the class can be used to retrieve the data structure passed to the ConsentUI process, or to determine if the current process is the ConsentUI process.
     /// The caller will be provided with one of the concrete implementations of this class, depending on the type of data structure that was passed to the ConsentUI process.
-    /// Use the <see cref="ConsentUIData.ConsentUIType"/> property to determine the type of data structure and cast it to one of the concrete implementations.
+    /// Use the <see cref="Type"/> property to determine the type of data structure and cast it to one of the concrete implementations.
     /// </summary>
     public abstract class ConsentUIData
     {
@@ -55,7 +55,7 @@ namespace Lithnet.CredentialProvider
         /// <summary>
         /// A series of flags that AppInfo passes to ConsentUI to signify actions that need to
         /// take place on the UI side.
-        /// This includes specifics around the UI that should be presented & signature verification settings.
+        /// This includes details about the UI that should be presented and the signature verification settings.
         /// </summary>
         public ConsentUIFlags Flags => this.header.Flags;
 

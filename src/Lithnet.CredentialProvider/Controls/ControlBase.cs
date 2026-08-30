@@ -18,6 +18,10 @@ namespace Lithnet.CredentialProvider
         private string label;
         private FieldOptions options;
         private protected ICredentialProviderLogger logger;
+
+        /// <summary>
+        /// Occurs when the value of a public property changes.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         private protected ControlBase(ControlBase source)

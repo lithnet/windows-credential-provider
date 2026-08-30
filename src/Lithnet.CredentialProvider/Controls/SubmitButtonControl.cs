@@ -10,14 +10,14 @@ namespace Lithnet.CredentialProvider
         private ControlBase adjacentToControl;
 
         /// <summary>
-        /// Creates a new <c ref="SubmitButtonControl"/> control
+        /// Creates a new <see cref="SubmitButtonControl"/> control.
         /// </summary>
         /// <param name="key">The unique key for this control</param>
         /// <param name="adjacentToControl">The control that the submit button should appear adjacent to</param>
         public SubmitButtonControl(string key, ControlBase adjacentToControl) : this(key, null, adjacentToControl) { }
 
         /// <summary>
-        /// Creates a new <c ref="SubmitButtonControl"/> control
+        /// Creates a new <see cref="SubmitButtonControl"/> control.
         /// </summary>
         /// <param name="key">The unique key for this control</param>
         /// <param name="label">The label associated with the control</param>
