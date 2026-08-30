@@ -12,14 +12,17 @@ namespace Lithnet.CredentialProvider
             {
                 this.logger.LogTrace("Advise");
 
+                if (this.eventsUnknown != IntPtr.Zero)
+                {
+                    this.ReleaseCredentialEvents();
+                }
+
                 if (pcpce != null)
                 {
+                    this.eventsUnknown = Marshal.GetIUnknownForObject(pcpce);
                     this.Controls.AssignEvents(pcpce);
                     this.events = pcpce;
                     this.events2 = pcpce as ICredentialProviderCredentialEvents2;
-
-                    var intPtr = Marshal.GetIUnknownForObject(pcpce);
-                    Marshal.AddRef(intPtr);
                 }
 
                 this.OnLoad();
@@ -28,6 +31,7 @@ namespace Lithnet.CredentialProvider
             }
             catch (Exception ex)
             {
+                this.ReleaseCredentialEvents();
                 this.logger.LogError(ex, "Advise failed");
                 return HRESULT.E_FAIL;
             }
@@ -39,12 +43,9 @@ namespace Lithnet.CredentialProvider
             {
                 this.logger.LogTrace("Unadvise");
 
-                if (this.events != null)
+                if (this.eventsUnknown != IntPtr.Zero)
                 {
-                    this.Controls.UnassignEvents();
-                    var intPtr = Marshal.GetIUnknownForObject(this.events);
-                    Marshal.Release(intPtr);
-                    this.events = null;
+                    this.ReleaseCredentialEvents();
                 }
 
                 this.OnUnload();
@@ -55,6 +56,26 @@ namespace Lithnet.CredentialProvider
             {
                 this.logger.LogError(ex, "UnAdvise failed");
                 return HRESULT.E_FAIL;
+            }
+        }
+
+        private void ReleaseCredentialEvents()
+        {
+            try
+            {
+                this.Controls.UnassignEvents();
+            }
+            finally
+            {
+                this.events2 = null;
+                this.events = null;
+
+                if (this.eventsUnknown != IntPtr.Zero)
+                {
+                    IntPtr unknown = this.eventsUnknown;
+                    this.eventsUnknown = IntPtr.Zero;
+                    Marshal.Release(unknown);
+                }
             }
         }
 
